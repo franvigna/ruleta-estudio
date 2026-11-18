@@ -38,7 +38,7 @@ npm install
 npm run dev
 ```
 
-La aplicación de desarrollo se sirve en <http://localhost:5290>.
+La aplicación de desarrollo se sirve en <http://localhost:5733>.
 
 Para comprobar la versión de producción:
 
@@ -47,7 +47,7 @@ npm run build
 npm run preview
 ```
 
-La vista previa se sirve en <http://localhost:4290>.
+La vista previa se sirve en <http://localhost:4733>.
 
 ## Comandos
 

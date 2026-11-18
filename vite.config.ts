@@ -3,11 +3,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  // En GitHub Pages el sitio vive bajo /<repo>/; el workflow define VITE_BASE.
+  base: process.env.VITE_BASE ?? '/',
   plugins: [react()],
   // Puertos propios (no los 5173/4173 por defecto) para no pisarse con otros proyectos.
   // strictPort: si estan ocupados falla en vez de saltar a otro puerto sin avisar.
-  server: { port: 5290, strictPort: true },
-  preview: { port: 4290, strictPort: true },
+  server: { port: 5733, strictPort: true },
+  preview: { port: 4733, strictPort: true },
   test: {
     globals: true,
     environment: 'jsdom',
