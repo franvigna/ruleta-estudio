@@ -21,6 +21,7 @@ Autor: Fran Vigna
 - Estadísticas generales, barras por tema y ranking de temas a reforzar.
 - Persistencia local por materia y migración automática del progreso de la versión legacy.
 - Atajos de teclado y modo de animación reducida.
+- Efectos visuales y sonidos sintetizados para giro, selección y autoevaluación.
 - Fallback en memoria cuando `localStorage` no está disponible.
 
 ## Requisitos y ejecución

@@ -23,6 +23,13 @@
   stroke-width: 4;
 }
 
+.seg.gana {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ganador 0.72s cubic-bezier(0.2, 0.8, 0.25, 1.35);
+  filter: drop-shadow(0 0 8px rgba(255, 216, 77, 0.95));
+}
+
 .seg text {
   font: 600 11.5px var(--display);
   fill: var(--tinta);
@@ -72,6 +79,100 @@
   pointer-events: none;
 }
 
+.celebracion {
+  position: absolute;
+  z-index: 3;
+  inset: 8%;
+  border: 6px solid rgba(255, 216, 77, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: aroGanador 0.75s ease-out both;
+}
+
+.celebracion span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--tinta);
+  border-radius: 3px;
+  background: var(--marca-si);
+  animation: destello 0.85s ease-out both;
+}
+
+.celebracion span:nth-child(1) {
+  --x: 150px;
+  --y: -110px;
+}
+
+.celebracion span:nth-child(2) {
+  --x: 165px;
+  --y: 70px;
+  background: #ffd84d;
+}
+
+.celebracion span:nth-child(3) {
+  --x: 20px;
+  --y: 165px;
+  background: #6cc4f2;
+}
+
+.celebracion span:nth-child(4) {
+  --x: -150px;
+  --y: 95px;
+  background: var(--marca-no);
+}
+
+.celebracion span:nth-child(5) {
+  --x: -160px;
+  --y: -75px;
+  background: #ff8fbf;
+}
+
+.celebracion span:nth-child(6) {
+  --x: -10px;
+  --y: -165px;
+  background: #ffd84d;
+}
+
+@keyframes ganador {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes aroGanador {
+  0% {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes destello {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) rotate(150deg) scale(1);
+  }
+}
+
 .leyenda {
   display: flex;
   flex-wrap: wrap;
@@ -100,7 +201,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tic {
+  .tic,
+  .seg.gana,
+  .celebracion,
+  .celebracion span {
     animation: none;
+  }
+
+  .celebracion {
+    display: none;
   }
 }

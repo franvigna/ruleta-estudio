@@ -19,6 +19,7 @@ export interface RuletaProps {
   ganador: number | null;
   animador: Animador;
   alGirar(): void;
+  alTic(): void;
   alTerminar(): void;
   etiquetaAria: string;
 }
@@ -31,11 +32,12 @@ export function Ruleta({
   ganador,
   animador,
   alGirar,
+  alTic,
   alTerminar,
   etiquetaAria,
 }: RuletaProps) {
   const n = temas.length;
-  const { refGrupo, tics } = useGiro({ giro, n, animador, alTerminar });
+  const { refGrupo, tics } = useGiro({ giro, n, animador, alTic, alTerminar });
   const tonos = tonosSegmentos(temas);
 
   const alTeclear = (e: KeyboardEvent<SVGGElement>) => {
@@ -101,6 +103,16 @@ export function Ruleta({
           </text>
         </g>
       </svg>
+      {ganador !== null ? (
+        <div className={estilos.celebracion} key={ganador} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+      ) : null}
     </div>
   );
 }

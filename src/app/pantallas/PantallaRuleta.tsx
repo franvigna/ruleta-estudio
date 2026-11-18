@@ -5,7 +5,14 @@ import { estadoPantalla } from '../../domain/sesion';
 import { AyudaAtajos, useAtajosTeclado } from '../../features/atajos';
 import { Leyenda, Ruleta } from '../../features/ruleta';
 import { ColumnaTarjeta, type ContenidoColumna } from '../../features/tarjeta';
-import { useEsMovil } from '../../shared/ui';
+import {
+  activarSonido,
+  sonidoSeleccion,
+  sonidoTac,
+  sonidoTrompetaTriste,
+  sonidoVictoria,
+  useEsMovil,
+} from '../../shared/ui';
 import { useDependencias } from '../providers/DependenciasProvider';
 import { useProgreso } from '../providers/ProgresoProvider';
 import { useSesion } from '../providers/SesionProvider';
@@ -19,7 +26,21 @@ export function PantallaRuleta() {
   const esMovil = useEsMovil();
   const refColumna = useRef<HTMLElement>(null);
 
-  useAtajosTeclado({ girar, voltear, marcar });
+  const girarConSonido = () => {
+    activarSonido();
+    girar();
+  };
+  const terminarConSonido = () => {
+    sonidoSeleccion();
+    terminarGiro();
+  };
+  const marcarConSonido = (marca: 'si' | 'no') => {
+    if (marca === 'si') sonidoVictoria();
+    else sonidoTrompetaTriste();
+    marcar(marca);
+  };
+
+  useAtajosTeclado({ girar: girarConSonido, voltear, marcar: marcarConSonido });
 
   const contenido = estado.contenido;
   const preguntaId = contenido.tipo === 'tarjeta' ? contenido.preguntaId : null;
@@ -87,8 +108,9 @@ export function PantallaRuleta() {
           giro={estado.giro}
           ganador={estado.ganador}
           animador={animador}
-          alGirar={girar}
-          alTerminar={terminarGiro}
+          alGirar={girarConSonido}
+          alTic={sonidoTac}
+          alTerminar={terminarConSonido}
           etiquetaAria={`Ruleta con los ${materia.temas.length} temas de la materia`}
         />
         <AyudaAtajos />
@@ -105,9 +127,9 @@ export function PantallaRuleta() {
         contenido={columna}
         ocupado={estadoPantalla(estado) === 'girando'}
         alVoltear={voltear}
-        alMarcar={marcar}
+        alMarcar={marcarConSonido}
         alOtra={otra}
-        alGirarDeNuevo={girar}
+        alGirarDeNuevo={girarConSonido}
       />
     </main>
   );

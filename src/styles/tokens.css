@@ -23,15 +23,15 @@
 
   /* Estados de marca */
   --marca-si: #6fd99a;
-  --marca-no: #ffb3b8;
+  --marca-no: #ff8f98;
   --barra-no: #f2707a;
   --repaso-fondo: #ffe1e3;
   --repaso-texto: #8a1c27;
 
   /* Foco y tipografia */
   --foco: #2b6fe0;
-  --display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Segoe UI', system-ui,
-    sans-serif;
+  --display:
+    'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
   --texto: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
 
   /* Sombras duras */

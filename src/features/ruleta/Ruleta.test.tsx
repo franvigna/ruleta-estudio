@@ -26,6 +26,7 @@ function props(extra: Partial<RuletaProps> = {}): RuletaProps {
     ganador: null,
     animador: animadorInerte,
     alGirar: vi.fn(),
+    alTic: vi.fn(),
     alTerminar: vi.fn(),
     etiquetaAria: 'Ruleta de prueba',
     ...extra,
@@ -81,6 +82,7 @@ describe('Ruleta', () => {
     expect(segs.map((g) => g.dataset.indice)).toEqual(['0', '2', '3', '1']);
     expect(segs.map((g) => tieneClase(g, 'gana'))).toEqual([false, false, false, true]);
     expect(temas).toEqual(copia);
+    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
   });
 
   it('sin ganador conserva el orden y no marca gana', () => {

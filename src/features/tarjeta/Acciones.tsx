@@ -2,6 +2,22 @@ import type { Marca } from '../../domain/types';
 import { Boton } from '../../shared/ui';
 import estilos from './Acciones.module.css';
 
+function IconoSiguiente() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h12M13 7l5 5-5 5" />
+    </svg>
+  );
+}
+
+function IconoGirar() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18.4 8A7 7 0 1 0 19 15M18 4v5h-5" />
+    </svg>
+  );
+}
+
 export interface AccionesProps {
   marcarVisible: boolean;
   marca: Marca | undefined;
@@ -37,8 +53,22 @@ export function Acciones({
           <span className={estilos.estado}>{textoEstado(marca)}</span>
         </div>
       ) : null}
-      <Boton onClick={alOtra}>Otra de este tema</Boton>
-      <Boton onClick={alGirarDeNuevo}>Girar de nuevo</Boton>
+      <Boton
+        className={estilos.icono}
+        aria-label="Siguiente pregunta del mismo tema"
+        title="Siguiente pregunta del mismo tema"
+        onClick={alOtra}
+      >
+        <IconoSiguiente />
+      </Boton>
+      <Boton
+        className={estilos.icono}
+        aria-label="Volver a girar la ruleta"
+        title="Volver a girar la ruleta"
+        onClick={alGirarDeNuevo}
+      >
+        <IconoGirar />
+      </Boton>
     </div>
   );
 }

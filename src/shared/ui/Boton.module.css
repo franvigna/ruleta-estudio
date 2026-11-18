@@ -14,12 +14,27 @@
   box-shadow: 1px 1px 0 var(--tinta);
 }
 
-.si[aria-pressed='true'] {
+.si {
   background: var(--marca-si);
 }
 
-.no[aria-pressed='true'] {
+.no {
   background: var(--marca-no);
+}
+
+.si:hover {
+  background: #58ce87;
+}
+
+.no:hover {
+  background: #ff7883;
+}
+
+.si[aria-pressed='true'],
+.no[aria-pressed='true'] {
+  box-shadow:
+    inset 0 0 0 3px var(--blanco),
+    var(--sombra-boton);
 }
 
 .armado {

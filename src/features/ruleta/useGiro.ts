@@ -6,6 +6,7 @@ interface OpcionesGiro {
   giro: PlanGiro | null;
   n: number;
   animador: Animador;
+  alTic(): void;
   alTerminar(): void;
 }
 
@@ -14,14 +15,16 @@ interface OpcionesGiro {
  * <g> (sin re-render por cuadro) y cuenta un tic por cada segmento que pasa
  * bajo el puntero (solo si el plan lo pide).
  */
-export function useGiro({ giro, n, animador, alTerminar }: OpcionesGiro): {
+export function useGiro({ giro, n, animador, alTic, alTerminar }: OpcionesGiro): {
   refGrupo: RefObject<SVGGElement>;
   tics: number;
 } {
   const refGrupo = useRef<SVGGElement>(null);
   const [tics, setTics] = useState(0);
+  const refAlTic = useRef(alTic);
   const refAlTerminar = useRef(alTerminar);
   useEffect(() => {
+    refAlTic.current = alTic;
     refAlTerminar.current = alTerminar;
   });
 
@@ -37,7 +40,10 @@ export function useGiro({ giro, n, animador, alTerminar }: OpcionesGiro): {
       const bajo = segmentoBajoPuntero(rot, n);
       if (bajo !== ultimo) {
         ultimo = bajo;
-        if (giro.conTic) setTics((t) => t + 1);
+        if (giro.conTic) {
+          setTics((t) => t + 1);
+          refAlTic.current();
+        }
       }
       if (fin) {
         if (!terminado) {

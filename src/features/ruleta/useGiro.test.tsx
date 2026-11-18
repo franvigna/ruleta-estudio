@@ -41,9 +41,10 @@ function Arnes(props: {
   giro: PlanGiro | null;
   n: number;
   animador: Animador;
+  alTic?: () => void;
   alTerminar(): void;
 }) {
-  const { refGrupo, tics } = useGiro(props);
+  const { refGrupo, tics } = useGiro({ ...props, alTic: props.alTic ?? (() => undefined) });
   return (
     <svg>
       <g ref={refGrupo} data-testid="grupo" />
@@ -102,16 +103,24 @@ describe('useGiro', () => {
 
   it('cuenta tics cuando cambia el segmento bajo el puntero si conTic', () => {
     const f = crearAnimadorFalso();
+    const alTic = vi.fn();
     const { container, rerender } = render(
       <Arnes giro={null} n={4} animador={f.animador} alTerminar={() => undefined} />,
     );
     rerender(
-      <Arnes giro={plan({ delta: 90 })} n={4} animador={f.animador} alTerminar={() => undefined} />,
+      <Arnes
+        giro={plan({ delta: 90 })}
+        n={4}
+        animador={f.animador}
+        alTic={alTic}
+        alTerminar={() => undefined}
+      />,
     );
     expect(leer(container).tics).toBe(0);
     // rot = -? : con rotacion positiva el segmento bajo el puntero retrocede de a uno
     f.avanzar(1000);
     expect(leer(container).tics).toBeGreaterThan(0);
+    expect(alTic).toHaveBeenCalledTimes(1);
   });
 
   it('no cuenta tics si el plan no tiene conTic', () => {

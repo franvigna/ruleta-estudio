@@ -71,9 +71,11 @@ describe('ColumnaTarjeta', () => {
     expect(props.alVoltear).toHaveBeenCalledTimes(1);
     await userEvent.click(screen.getByRole('button', { name: 'Me la sabía' }));
     expect(props.alMarcar).toHaveBeenCalledWith('si');
-    await userEvent.click(screen.getByRole('button', { name: 'Otra de este tema' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Siguiente pregunta del mismo tema' }),
+    );
     expect(props.alOtra).toHaveBeenCalledTimes(1);
-    await userEvent.click(screen.getByRole('button', { name: 'Girar de nuevo' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Volver a girar la ruleta' }));
     expect(props.alGirarDeNuevo).toHaveBeenCalledTimes(1);
   });
 });

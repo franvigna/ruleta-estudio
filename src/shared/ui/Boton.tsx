@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from 'react';
 import estilos from './Boton.module.css';
 
 export interface BotonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** Con aria-pressed="true" el tono 'si' pinta verde y 'no' pinta rosa. */
+  /** El tono 'si' pinta verde y 'no' pinta rojo; aria-pressed refuerza la seleccion. */
   tono?: 'neutro' | 'si' | 'no';
   /** Estado de confirmacion pendiente (por ejemplo, "¿Seguro?"). */
   armado?: boolean;

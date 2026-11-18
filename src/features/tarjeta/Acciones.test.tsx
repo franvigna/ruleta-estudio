@@ -17,12 +17,14 @@ function montar(parcial: Partial<AccionesProps> = {}) {
 }
 
 describe('Acciones', () => {
-  it('sin marcarVisible solo hay Otra y Girar de nuevo', () => {
+  it('sin marcarVisible solo hay acciones de siguiente pregunta y volver a girar', () => {
     montar({ marcarVisible: false });
     expect(screen.queryByText('¿Te la sabías?')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Me la sabía' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Otra de este tema' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Girar de nuevo' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Siguiente pregunta del mismo tema' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Volver a girar la ruleta' })).toBeInTheDocument();
   });
 
   it('con marcarVisible muestra los botones de marca sin presionar', () => {
@@ -66,8 +68,10 @@ describe('Acciones', () => {
     const props = montar();
     await userEvent.click(screen.getByRole('button', { name: 'Me la sabía' }));
     await userEvent.click(screen.getByRole('button', { name: 'No me la sabía' }));
-    await userEvent.click(screen.getByRole('button', { name: 'Otra de este tema' }));
-    await userEvent.click(screen.getByRole('button', { name: 'Girar de nuevo' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Siguiente pregunta del mismo tema' }),
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Volver a girar la ruleta' }));
     expect(props.alMarcar).toHaveBeenNthCalledWith(1, 'si');
     expect(props.alMarcar).toHaveBeenNthCalledWith(2, 'no');
     expect(props.alOtra).toHaveBeenCalledTimes(1);

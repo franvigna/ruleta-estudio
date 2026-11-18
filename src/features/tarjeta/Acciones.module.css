@@ -24,3 +24,21 @@
   color: var(--tinta-2);
   font-size: 14px;
 }
+
+.icono {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 44px;
+  padding: 8px;
+}
+
+.icono svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
