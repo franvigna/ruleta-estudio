@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+legacy
+content
+src/content/generated
+playwright-report
+test-results
+package-lock.json
+PROMPT_CLAUDE_CODE.md
