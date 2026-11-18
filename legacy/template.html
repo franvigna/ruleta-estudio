@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ruleta de Programación Avanzada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --papel:#F7FAFD; --cuadricula:#E3EBF5; --tinta:#172447; --tinta-2:#4A5877; --blanco:#FFFFFF;
+  --cc:#FFD84D; --cc-2:#FFE993; --da:#6FD99A; --da-2:#B0EEC8; --gr:#6CC4F2; --gr-2:#AEDDF8; --tda:#FF8FBF; --tda-2:#FFC2DB;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --texto:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; color:var(--tinta); font-family:var(--texto); font-size:17px; line-height:1.55;
+  background-color:var(--papel);
+  background-image:linear-gradient(var(--cuadricula) 1px,transparent 1px),linear-gradient(90deg,var(--cuadricula) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.app{max-width:1180px;margin:0 auto;padding:28px 20px 48px;display:grid;grid-template-columns:minmax(320px,460px) 1fr;gap:40px;align-items:center;min-height:100vh;min-height:100dvh}
+.izq{}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4vw,40px);line-height:1.05;letter-spacing:-.02em;margin:0 0 6px}
+.sub{margin:0 0 20px;color:var(--tinta-2);font-size:16px}
+.modos{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.modo{
+  font:700 18px/1.2 var(--display);color:var(--tinta);background:var(--blanco);
+  border:2px solid var(--tinta);border-radius:14px;padding:14px 12px;cursor:pointer;
+  box-shadow:4px 4px 0 var(--tinta);transition:transform .12s,box-shadow .12s,background .12s;
+}
+.modo small{display:block;font:400 13px/1.3 var(--texto);color:var(--tinta-2);margin-top:3px}
+.modo:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--tinta)}
+.modo:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--tinta)}
+.modo[aria-pressed="true"]{background:var(--tinta);color:var(--blanco)}
+.modo[aria-pressed="true"] small{color:#C9D3EA}
+.modo:disabled{cursor:wait;opacity:.65}
+:focus-visible{outline:3px solid #2B6FE0;outline-offset:3px}
+.rueda-box{position:relative;width:100%;max-width:460px;aspect-ratio:1;margin:0 auto}
+#rueda{width:100%;height:100%;display:block;overflow:visible}
+.seg path{stroke:var(--blanco);stroke-width:2}
+.seg.gana path{stroke:var(--tinta);stroke-width:4}
+.seg text{font:600 11.5px var(--display);fill:var(--tinta);pointer-events:none}
+.puntero{position:absolute;z-index:2;left:50%;top:-14px;width:34px;height:44px;margin-left:-17px;transform-origin:50% 8px;filter:drop-shadow(2px 2px 0 rgba(23,36,71,.25))}
+.puntero.tic{animation:tic .12s ease-out}
+@keyframes tic{0%{transform:rotate(-14deg)}100%{transform:rotate(0)}}
+.centro{cursor:pointer}
+.centro text{font:800 15px var(--display);fill:var(--blanco);pointer-events:none}
+.teclas{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:16px;color:var(--tinta-2);font-size:14px}
+kbd{font:700 12px var(--texto);border:1.5px solid var(--tinta-2);border-bottom-width:3px;border-radius:6px;padding:1px 6px;background:var(--blanco);color:var(--tinta)}
+.leyenda{display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;margin-top:10px;font-size:13px;color:var(--tinta-2)}
+.leyenda span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+.der{display:grid;grid-template-rows:1fr auto 1fr;align-self:stretch;min-height:300px}
+.der>.resultado{grid-row:1;align-self:end}
+.der>.escena,.der>.vacio{grid-row:2}
+.der>.acciones{grid-row:3;align-self:start}
+.vacio{border:2px dashed #AFC0DA;border-radius:18px;padding:36px 28px;color:var(--tinta-2);background:rgba(255,255,255,.7);font-size:18px}
+.vacio strong{color:var(--tinta)}
+.resultado{font:700 15px var(--display);color:var(--tinta-2);margin:0 0 12px}
+.escena{perspective:1600px}
+.tarjeta{display:grid;transform-style:preserve-3d;transition:transform .65s cubic-bezier(.3,.7,.2,1);cursor:pointer;border-radius:18px}
+.tarjeta.dada{transform:rotateY(180deg)}
+.cara{
+  grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:var(--blanco);border:2px solid var(--tinta);border-radius:18px;
+  box-shadow:6px 6px 0 var(--tinta);overflow:hidden;display:flex;flex-direction:column;min-height:340px;
+}
+.dorso{transform:rotateY(180deg)}
+.franja{height:14px;background:var(--area)}
+.cabeza{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:16px 24px 0}
+.chip{font:700 14px/1 var(--display);padding:7px 11px;border-radius:999px;background:var(--area);color:var(--tinta)}
+.tipo{font:700 14px/1 var(--display);padding:6px 10px;border-radius:999px;border:1.5px solid var(--tinta)}
+.badge{font-size:13px;line-height:1;padding:6px 10px;border-radius:999px;background:#EEF2F9;color:var(--tinta-2)}
+.cuerpo{padding:18px 24px 8px;flex:1}
+.frente .cuerpo{
+  background-image:repeating-linear-gradient(transparent 0 33px,#DCE6F3 33px 34px);
+  background-position:0 6px;
+}
+.pregunta{font:700 clamp(20px,2.3vw,25px)/1.35 var(--display);letter-spacing:-.005em}
+.pregunta p{margin:0 0 10px}
+.opts{font:400 17px/1.5 var(--texto);margin:10px 0 0;padding-left:0;list-style:none}
+.opts li{margin:6px 0}
+.respuesta{font-size:17px}
+.respuesta p{margin:0 0 12px}
+.respuesta ul,.respuesta ol{padding-left:22px;margin:0 0 12px}
+.respuesta li{margin:4px 0}
+.nota{font-style:italic;color:var(--tinta-2);font-size:15px;border-left:4px solid var(--area);padding:4px 0 4px 12px;margin:0 0 14px}
+.tbl{overflow-x:auto;margin:4px 0 14px}
+.tbl table{border-collapse:collapse;font-size:15px;min-width:100%}
+.tbl th,.tbl td{border:1px solid #C9D5E6;padding:6px 9px;text-align:left;vertical-align:top}
+.tbl th{background:#EEF2F9;font-family:var(--display)}
+.pie{padding:10px 24px 16px;color:var(--tinta-2);font-size:14px}
+.acciones{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.boton{font:700 15px var(--display);color:var(--tinta);background:var(--blanco);border:2px solid var(--tinta);border-radius:12px;padding:10px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--tinta)}
+.boton:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--tinta)}
+.contador{color:var(--tinta-2);font-size:14px;align-self:center}
+
+.seg.completo path{opacity:.3}
+.seg.completo text{opacity:.45}
+.marcar{display:none;align-items:center;flex-wrap:wrap;gap:10px;width:100%;margin-bottom:4px}
+.marcar.visible{display:flex}
+.marcar .q{font:700 15px var(--display)}
+.boton.si[aria-pressed="true"]{background:var(--da);}
+.boton.no[aria-pressed="true"]{background:#FFB3B8;}
+.estado{color:var(--tinta-2);font-size:14px}
+.badge.repaso{background:#FFE1E3;color:#8A1C27}
+.ir{display:block;text-align:center;margin-top:12px;font:700 15px var(--display);color:var(--tinta)}
+.progreso{max-width:1180px;margin:0 auto;padding:12px 20px 64px}
+.progreso h2{font:800 clamp(24px,3vw,32px)/1.1 var(--display);letter-spacing:-.015em;margin:0 0 6px}
+.resumen{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0 26px}
+.dato{background:var(--blanco);border:2px solid var(--tinta);border-radius:14px;padding:12px 16px;min-width:150px}
+.dato b{display:block;font:800 28px/1.1 var(--display)}
+.dato span{color:var(--tinta-2);font-size:14px}
+.dos{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:28px;align-items:start}
+.panel{background:var(--blanco);border:2px solid var(--tinta);border-radius:16px;padding:18px 20px}
+.panel h3{font:700 19px var(--display);margin:0 0 10px}
+.reforzar{margin:0;padding-left:22px}
+.reforzar li{margin:8px 0}
+.reforzar small{display:block;color:var(--tinta-2);font-size:14px}
+.fila{display:grid;grid-template-columns:minmax(150px,1.1fr) 2fr 104px;gap:12px;align-items:center;padding:8px 0;border-top:1px solid #E3EAF3}
+.fila:first-of-type{border-top:0}
+.fila .nom{font:700 15px var(--display)}
+.fila .nom::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;background:var(--c)}
+.barra{display:flex;height:14px;border-radius:7px;overflow:hidden;background:#EEF2F9;border:1px solid #D4DEEC}
+.barra .b-si{background:var(--c)}
+.barra .b-no{background:#F2707A}
+.fila .num{font-size:14px;color:var(--tinta-2);text-align:right;white-space:nowrap}
+.fila .num b{color:var(--tinta);font-size:16px}
+.ley2{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--tinta-2);margin:4px 0 10px}
+.ley2 i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.reset{margin-top:16px}
+.reset.confirmar{background:#FFB3B8}
+.aviso{color:#8A1C27;font-size:14px;margin-top:8px}
+@media (max-width:860px){.dos{grid-template-columns:1fr}.fila{grid-template-columns:1fr auto}.fila .barra{grid-column:1 / -1;grid-row:2}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;gap:28px;padding-top:20px;min-height:0;align-items:start}
+  .der{align-self:auto}
+  .rueda-box{max-width:min(420px,100%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .tarjeta{transition:none}
+  .puntero.tic{animation:none}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <section class="izq" aria-label="Ruleta">
+    <h1>Ruleta de Programación Avanzada</h1>
+    <p class="sub">La ruleta gira, sortea un tema y te toca una pregunta al azar de ese tema.</p>
+        <div class="rueda-box">
+      <svg class="puntero" id="puntero" viewBox="0 0 34 44" aria-hidden="true"><path d="M17 42 L3 8 Q17 -2 31 8 Z" fill="#172447"/><circle cx="17" cy="11" r="4" fill="#fff"/></svg>
+      <svg viewBox="-10 -10 420 420" id="rueda" role="img" aria-label="Ruleta con los 18 temas de la materia">
+        <circle cx="200" cy="200" r="198" fill="#172447"/>
+        <g id="giro"></g>
+        <g class="centro" id="centro" role="button" tabindex="0" aria-label="Girar la ruleta">
+          <circle cx="200" cy="200" r="34" fill="#172447" stroke="#fff" stroke-width="3"/>
+          <text x="200" y="205" text-anchor="middle">Girar</text>
+        </g>
+      </svg>
+    </div>
+    <div class="teclas" aria-hidden="true">
+      <span><kbd>Espacio</kbd> o <kbd>Enter</kbd> girar</span>
+      <span><kbd>V</kbd> dar vuelta</span>
+      <span><kbd>S</kbd> / <kbd>N</kbd> me la sabía / no</span>
+    </div>
+    <div class="leyenda" aria-label="Áreas">
+      <span style="--c:var(--cc)">CC Complejidad</span>
+      <span style="--c:var(--da)">DA Diseño de algoritmos</span>
+      <span style="--c:var(--gr)">GR Grafos</span>
+      <span style="--c:var(--tda)">TDA Estructuras</span>
+    </div>
+    <a class="ir" href="#progreso">Ver tu progreso</a>
+  </section>
+  <section class="der" aria-live="polite" id="der">
+    <div class="vacio" id="vacio"><strong>Todavía no giraste.</strong><br>Tocá el centro de la ruleta o apretá Espacio, y la ruleta elige el tema.</div>
+  </section>
+</main>
+<section class="progreso" id="progreso" aria-labelledby="tit-prog">
+  <h2 id="tit-prog">Tu progreso</h2>
+  <p class="sub">Se guarda en este navegador. Las preguntas que marcás como sabidas salen de la ruleta; las que no, siguen para repasar.</p>
+  <div class="resumen" id="resumen"></div>
+  <div class="dos">
+    <div class="panel">
+      <h3>Temas para reforzar</h3>
+      <div id="reforzar"></div>
+      <button class="boton reset" id="reset">Reiniciar progreso</button>
+      <p class="aviso" id="aviso" hidden></p>
+    </div>
+    <div class="panel">
+      <h3>Por tema</h3>
+      <div class="ley2"><span><i style="background:#9FB2CC"></i>Sabidas (color del área)</span><span><i style="background:#F2707A"></i>No sabidas</span><span><i style="background:#EEF2F9;border:1px solid #D4DEEC"></i>Sin responder</span></div>
+      <div id="tabla"></div>
+    </div>
+  </div>
+</section>
+<script id="datos" type="application/json">__DATA__</script>
+<script>
+(function(){
+  const D = JSON.parse(document.getElementById('datos').textContent);
+  const T = D.topics, N = T.length, A = 360 / N;
+  const AREA = {CC:['var(--cc)','var(--cc-2)'],DA:['var(--da)','var(--da-2)'],GR:['var(--gr)','var(--gr-2)'],TDA:['var(--tda)','var(--tda-2)']};
+  const giro = document.getElementById('giro'), puntero = document.getElementById('puntero');
+  const der = document.getElementById('der');
+  const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let rot = 0, girando = false, actual = null, temaActual = null;
+
+  // ---- progreso guardado
+  const CLAVE = 'ruleta-pa:progreso:v1';
+  let R = {};
+  let guardaOk = true;
+  try { const s = localStorage.getItem(CLAVE); if (s) R = JSON.parse(s).r || {}; } catch (e) { R = {}; }
+  const validos = new Set(D.items.map(x => x.id));
+  Object.keys(R).forEach(k => { if (!validos.has(k)) delete R[k]; });
+  function guardar() {
+    try { localStorage.setItem(CLAVE, JSON.stringify({r: R})); guardaOk = true; }
+    catch (e) { guardaOk = false; }
+    const av = document.getElementById('aviso');
+    av.hidden = guardaOk; if (!guardaOk) av.textContent = 'Este navegador no permite guardar: el progreso se pierde al cerrar la página.';
+  }
+  const delTema = tid => D.items.filter(x => x.t === tid);
+  const pendientes = tid => delTema(tid).filter(x => R[x.id] !== 'si');
+
+  // ---- dibujar ruleta
+  const NS = 'http://www.w3.org/2000/svg';
+  const pt = (ang, r) => { const a = (ang - 90) * Math.PI / 180; return [200 + r * Math.cos(a), 200 + r * Math.sin(a)]; };
+  let prev = null, alt = 0;
+  T.forEach((t, i) => {
+    alt = (t.area === prev) ? 1 - alt : 0; prev = t.area;
+    const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'seg'); g.dataset.i = i;
+    const [x1, y1] = pt(i * A, 190), [x2, y2] = pt((i + 1) * A, 190);
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', `M200 200 L${x1} ${y1} A190 190 0 0 1 ${x2} ${y2} Z`);
+    p.setAttribute('style', 'fill:' + AREA[t.area][alt]);
+    g.appendChild(p);
+    const c = i * A + A / 2, tx = document.createElementNS(NS, 'text');
+    if (c < 180) { tx.setAttribute('transform', `rotate(${c - 90} 200 200)`); tx.setAttribute('x', 380); tx.setAttribute('text-anchor', 'end'); }
+    else { tx.setAttribute('transform', `rotate(${c + 90} 200 200)`); tx.setAttribute('x', 20); tx.setAttribute('text-anchor', 'start'); }
+    tx.setAttribute('y', 204); tx.textContent = t.short;
+    g.appendChild(tx); giro.appendChild(g);
+  });
+  const segs = [...giro.querySelectorAll('.seg')].sort((a, b) => a.dataset.i - b.dataset.i);
+  function marcarCompletos() { segs.forEach((s, i) => s.classList.toggle('completo', pendientes(T[i].id).length === 0)); }
+
+  // ---- mazo por tema: solo preguntas no sabidas, mezcladas
+  const mazos = {};
+  function sacar(tid) {
+    let m = (mazos[tid] || []).filter(x => R[x.id] !== 'si');
+    if (!m.length) {
+      m = pendientes(tid);
+      for (let i = m.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [m[i], m[j]] = [m[j], m[i]]; }
+      if (actual && m.length > 1 && m[m.length - 1].id === actual.id) m.unshift(m.pop());
+    }
+    const it = m.pop(); mazos[tid] = m; return it;
+  }
+
+  const bajoPuntero = r => Math.floor((((-r) % 360) + 360) % 360 / A) % N;
+
+  function todoSabido() {
+    der.innerHTML = '<div class="vacio"><strong>Te sabés todas las preguntas.</strong><br>Reiniciá el progreso para empezar de nuevo.</div>';
+  }
+
+  function girar() {
+    if (girando) return;
+    const disp = T.map((t, i) => i).filter(i => pendientes(T[i].id).length > 0);
+    if (!disp.length) { todoSabido(); return; }
+    girando = true;
+    segs.forEach(s => s.classList.remove('gana'));
+    const idx = disp[Math.floor(Math.random() * disp.length)];
+    const centro = idx * A + A / 2 + (Math.random() - .5) * A * .6;
+    const vueltas = reducido ? 1 : 5 + Math.floor(Math.random() * 3);
+    const delta = vueltas * 360 + ((((-centro - rot) % 360) + 360) % 360);
+    const desde = rot, dur = reducido ? 700 : 5200, t0 = performance.now();
+    let ultimo = bajoPuntero(rot);
+    der.setAttribute('aria-busy', 'true');
+    function paso(now) {
+      const u = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - u, 4);
+      rot = desde + delta * e;
+      giro.setAttribute('transform', `rotate(${rot} 200 200)`);
+      const b = bajoPuntero(rot);
+      if (b !== ultimo && !reducido) { ultimo = b; puntero.classList.remove('tic'); void puntero.getBBox(); puntero.classList.add('tic'); }
+      if (u < 1) requestAnimationFrame(paso); else terminar(idx);
+    }
+    requestAnimationFrame(paso);
+  }
+
+  function terminar(idx) {
+    girando = false;
+    der.removeAttribute('aria-busy');
+    segs[idx].classList.add('gana'); giro.appendChild(segs[idx]);
+    temaActual = T[idx];
+    mostrar();
+  }
+
+  function mostrar() {
+    const t = temaActual;
+    if (!pendientes(t.id).length) { girar(); return; }
+    const it = sacar(t.id);
+    actual = it;
+    const area = 'var(--' + t.area.toLowerCase() + ')';
+    let badges = it.badge ? `<span class="badge">${it.badge}</span>` : '';
+    if (R[it.id] === 'no') badges += '<span class="badge repaso">Para repasar</span>';
+    der.innerHTML = `
+      <p class="resultado">Salió ${t.name}</p>
+      <div class="escena">
+        <div class="tarjeta" id="tarjeta" role="button" tabindex="0" aria-pressed="false" aria-label="Tarjeta: tocá para ver la respuesta" style="--area:${area}">
+          <div class="cara frente">
+            <div class="franja"></div>
+            <div class="cabeza"><span class="chip">${t.name}</span>${badges}</div>
+            <div class="cuerpo"><div class="pregunta">${it.q}</div></div>
+            <div class="pie">Tocá la tarjeta para ver la respuesta</div>
+          </div>
+          <div class="cara dorso" aria-hidden="true">
+            <div class="franja"></div>
+            <div class="cabeza"><span class="chip">${t.name}</span><span class="tipo">Respuesta</span></div>
+            <div class="cuerpo respuesta">${it.n ? `<p class="nota">${it.n}</p>` : ''}${it.a}</div>
+            <div class="pie">Tocá la tarjeta para volver a la pregunta</div>
+          </div>
+        </div>
+      </div>
+      <div class="acciones">
+        <div class="marcar" id="marcar">
+          <span class="q">¿Te la sabías?</span>
+          <button class="boton si" id="si" aria-pressed="false">Me la sabía</button>
+          <button class="boton no" id="no" aria-pressed="false">No me la sabía</button>
+          <span class="estado" id="estado"></span>
+        </div>
+        <button class="boton" id="otra">Otra de este tema</button>
+        <button class="boton" id="regirar">Girar de nuevo</button>
+      </div>`;
+    const card = document.getElementById('tarjeta');
+    card.addEventListener('click', voltear);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); voltear(); } });
+    document.getElementById('si').addEventListener('click', () => marcar('si'));
+    document.getElementById('no').addEventListener('click', () => marcar('no'));
+    document.getElementById('otra').addEventListener('click', () => { if (!girando) mostrar(); });
+    document.getElementById('regirar').addEventListener('click', () => girar());
+    pintarMarca();
+    if (window.innerWidth <= 860) der.scrollIntoView({behavior: reducido ? 'auto' : 'smooth', block: 'start'});
+  }
+
+  function voltear() {
+    const card = document.getElementById('tarjeta'); if (!card) return;
+    const dada = card.classList.toggle('dada');
+    card.setAttribute('aria-pressed', dada);
+    card.setAttribute('aria-label', dada ? 'Tarjeta: mostrando la respuesta, tocá para volver' : 'Tarjeta: tocá para ver la respuesta');
+    card.querySelector('.frente').setAttribute('aria-hidden', dada);
+    card.querySelector('.dorso').setAttribute('aria-hidden', !dada);
+    if (dada) document.getElementById('marcar').classList.add('visible');
+  }
+
+  function pintarMarca() {
+    if (!actual || !document.getElementById('si')) return;
+    const v = R[actual.id];
+    document.getElementById('si').setAttribute('aria-pressed', v === 'si');
+    document.getElementById('no').setAttribute('aria-pressed', v === 'no');
+    document.getElementById('estado').textContent = v === 'si' ? 'Sale de la ruleta.' : v === 'no' ? 'Queda para repasar.' : '';
+  }
+
+  function marcar(v) {
+    if (!actual || !document.getElementById('marcar').classList.contains('visible')) return;
+    R[actual.id] = v;
+    guardar(); pintarMarca(); marcarCompletos(); pintarProgreso();
+  }
+
+  // ---- progreso
+  function stats(tid) {
+    const its = delTema(tid);
+    const si = its.filter(x => R[x.id] === 'si').length, no = its.filter(x => R[x.id] === 'no').length;
+    return {total: its.length, si, no, sin: its.length - si - no, pct: Math.round(100 * si / its.length)};
+  }
+  function pintarProgreso() {
+    const tot = D.items.length;
+    const si = D.items.filter(x => R[x.id] === 'si').length, no = D.items.filter(x => R[x.id] === 'no').length;
+    document.getElementById('resumen').innerHTML = `
+      <div class="dato"><b>${Math.round(100 * si / tot)}%</b><span>de la materia sabida</span></div>
+      <div class="dato"><b>${si}</b><span>sabidas de ${tot}</span></div>
+      <div class="dato"><b>${no}</b><span>para repasar</span></div>
+      <div class="dato"><b>${tot - si - no}</b><span>sin responder</span></div>`;
+    const filas = T.map(t => ({t, s: stats(t.id)}));
+    const flojos = filas.filter(f => f.s.no > 0)
+      .map(f => ({...f, err: f.s.no / (f.s.si + f.s.no)}))
+      .sort((a, b) => b.err - a.err || b.s.no - a.s.no || a.s.pct - b.s.pct).slice(0, 3);
+    document.getElementById('reforzar').innerHTML = flojos.length
+      ? '<ol class="reforzar">' + flojos.map(f => `<li><b>${f.t.name}</b><small>${f.s.no} no sabidas de ${f.s.si + f.s.no} respondidas, ${f.s.pct}% del tema sabido</small></li>`).join('') + '</ol>'
+      : '<p class="sub">Todavía no marcaste ninguna pregunta como no sabida. Cuando lo hagas, acá aparecen los temas con más errores.</p>';
+    document.getElementById('tabla').innerHTML = filas.map(({t, s}) => `
+      <div class="fila" style="--c:var(--${t.area.toLowerCase()})">
+        <span class="nom">${t.name}</span>
+        <div class="barra" role="img" aria-label="${s.si} sabidas, ${s.no} no sabidas, ${s.sin} sin responder">
+          <span class="b-si" style="width:${100 * s.si / s.total}%"></span><span class="b-no" style="width:${100 * s.no / s.total}%"></span>
+        </div>
+        <span class="num"><b>${s.pct}%</b> ${s.si} de ${s.total}</span>
+      </div>`).join('');
+  }
+
+  // ---- reiniciar (confirmación en dos toques)
+  const reset = document.getElementById('reset'); let armado = null;
+  reset.addEventListener('click', () => {
+    if (!armado) {
+      reset.textContent = '¿Seguro? Tocá de nuevo para borrar todo'; reset.classList.add('confirmar');
+      armado = setTimeout(() => { armado = null; reset.textContent = 'Reiniciar progreso'; reset.classList.remove('confirmar'); }, 4000);
+      return;
+    }
+    clearTimeout(armado); armado = null; reset.textContent = 'Reiniciar progreso'; reset.classList.remove('confirmar');
+    R = {}; for (const k in mazos) delete mazos[k];
+    guardar(); marcarCompletos(); pintarProgreso(); pintarMarca();
+    if (actual && document.querySelector('.badge.repaso')) document.querySelector('.badge.repaso').remove();
+  });
+
+  document.getElementById('centro').addEventListener('click', () => girar());
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const enBoton = e.target.closest && e.target.closest('button, a');
+    if (e.key === ' ' || e.key === 'Enter') {
+      if (enBoton) return;
+      e.preventDefault(); girar();
+    } else if (e.key === 'v' || e.key === 'V') voltear();
+    else if (e.key === 's' || e.key === 'S') marcar('si');
+    else if (e.key === 'n' || e.key === 'N') marcar('no');
+  });
+
+  marcarCompletos(); pintarProgreso();
+})();
+</script>
+</body>
+</html>
