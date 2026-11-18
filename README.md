@@ -17,8 +17,10 @@ Autor: Fran Vigna
 - Ruleta que excluye los temas ya completados.
 - Tarjetas reversibles con preguntas y respuestas en Markdown.
 - Marcas “Me la sabía” y “No me la sabía”, corregibles en cualquier momento.
+- Selección ponderada: las preguntas con más fallos tienen más oportunidades de volver a salir.
 - Mazo por tema sin repeticiones inmediatas y acción “Otra de este tema”.
 - Estadísticas generales, barras por tema y ranking de temas a reforzar.
+- Historial de las preguntas que más costaron, ordenado por cantidad de fallos.
 - Persistencia local por materia y migración automática del progreso de la versión legacy.
 - Atajos de teclado y modo de animación reducida.
 - Efectos visuales y sonidos sintetizados para giro, selección y autoevaluación.

@@ -6,5 +6,6 @@ describe('App', () => {
     renderizarApp({ ruta: '/' });
     expect(screen.getByRole('heading', { name: 'Ruleta de Estudio' })).toBeInTheDocument();
     expect(await screen.findByRole('link', { name: /Demo/ })).toBeInTheDocument();
+    expect(screen.queryByText('Otra materia')).not.toBeInTheDocument();
   });
 });

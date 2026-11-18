@@ -1,5 +1,10 @@
 import { Link } from 'react-router-dom';
-import { estadisticasPorTema, resumenMateria, temasAReforzar } from '../../domain/estadisticas';
+import {
+  estadisticasPorTema,
+  preguntasMasDificiles,
+  resumenMateria,
+  temasAReforzar,
+} from '../../domain/estadisticas';
 import { progresoVacio } from '../../domain/progreso';
 import { PanelProgreso } from '../../features/progreso';
 import { useProgreso } from '../providers/ProgresoProvider';
@@ -24,6 +29,7 @@ export function PantallaProgreso() {
         resumen={resumenMateria(materia, p)}
         reforzar={temasAReforzar(materia, p)}
         porTema={estadisticasPorTema(materia, p)}
+        preguntasDificiles={preguntasMasDificiles(materia, p)}
         alReiniciar={sesion.reiniciar}
       />
       <Link className={estilos.volver} to={hrefMateria(materia.id)}>

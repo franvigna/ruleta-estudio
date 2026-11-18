@@ -6,6 +6,7 @@ import {
   marcar,
   pendientesDelTema,
   progresoVacio,
+  registrarFallo,
   reiniciar,
   temaCompleto,
 } from './progreso';
@@ -27,6 +28,13 @@ describe('progreso', () => {
     expect(marcar(p, 'a1', 'si')).toBe(p);
   });
 
+  it('registra y acumula fallos sin cambiar la marca', () => {
+    const p1 = registrarFallo(progresoVacio, 'a1');
+    const p2 = registrarFallo(p1, 'a1');
+    expect(p2.fallos).toEqual({ a1: 2 });
+    expect(p2.marcas).toEqual({});
+  });
+
   it('reiniciar devuelve el progreso vacio', () => {
     expect(reiniciar()).toBe(progresoVacio);
   });
@@ -37,6 +45,12 @@ describe('progreso', () => {
     const r = limpiarHuerfanos(p, ids);
     expect(r.marcas).toEqual({ a1: 'si', b2: 'no' });
     expect(p.marcas).toHaveProperty('x9');
+  });
+
+  it('limpiarHuerfanos tambien limpia contadores', () => {
+    const ids = idsDeMateria(materiaEjemplo());
+    const p = { marcas: {}, fallos: { a1: 2, x9: 4 } };
+    expect(limpiarHuerfanos(p, ids).fallos).toEqual({ a1: 2 });
   });
 
   it('limpiarHuerfanos devuelve la misma ref si no habia huerfanos', () => {

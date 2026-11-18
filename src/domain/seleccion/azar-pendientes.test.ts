@@ -37,10 +37,10 @@ describe('azarPendientes', () => {
     expect(rng).not.toHaveBeenCalled();
   });
 
-  it('sacarPregunta usa el mazo y devuelve el estado nuevo', () => {
+  it('sacarPregunta usa seleccion ponderada y conserva el estado compatible', () => {
     const r = est.sacarPregunta(ctx(), est.estadoInicial(), 't1', rngSecuencia([0]))!;
     expect(r.preguntaId).toBe('a1');
-    expect(r.estado['t1']).toEqual(['a2', 'a3']);
+    expect(r.estado).toEqual({});
   });
 
   it('sacarPregunta devuelve null para tema completo o inexistente', () => {

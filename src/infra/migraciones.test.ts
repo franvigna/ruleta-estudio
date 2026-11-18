@@ -33,7 +33,7 @@ describe('migrarV1aV2', () => {
     const v2 = {
       version: 2,
       materias: {
-        [MATERIA_V1]: { marcas: { 't7.2': 'no', otro: 'si' } },
+        [MATERIA_V1]: { marcas: { 't7.2': 'no', otro: 'si' }, fallos: { 't7.2': 3 } },
         otra: { marcas: { z: 'si' } },
       },
     };
@@ -44,6 +44,7 @@ describe('migrarV1aV2', () => {
     const repo = crearLocalStorageRepo(almacen);
     expect(await repo.cargar(MATERIA_V1)).toEqual({
       marcas: { 't7.2': 'no', r0a1b2c3d4: 'no', otro: 'si' },
+      fallos: { 't7.2': 3 },
     });
     expect(await repo.cargar('otra')).toEqual({ marcas: { z: 'si' } });
   });

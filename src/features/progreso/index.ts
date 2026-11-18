@@ -1,4 +1,5 @@
 export { PanelProgreso } from './PanelProgreso';
+export { PreguntasDificiles } from './PreguntasDificiles';
 export type { PanelProgresoProps } from './PanelProgreso';
 export { Resumen } from './Resumen';
 export { TemasAReforzar } from './TemasAReforzar';

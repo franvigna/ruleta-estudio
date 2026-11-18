@@ -54,6 +54,16 @@
   margin-top: 8px;
 }
 
+.dificiles {
+  margin-top: 28px;
+}
+
+.explicacion {
+  margin: -4px 0 14px;
+  color: var(--tinta-2);
+  font-size: 14px;
+}
+
 @media (max-width: 860px) {
   .dos {
     grid-template-columns: 1fr;

@@ -1,15 +1,22 @@
 import type { ReactNode } from 'react';
-import type { Conteo, EstadisticaTema, TemaAReforzar } from '../../domain/estadisticas';
+import type {
+  Conteo,
+  EstadisticaTema,
+  PreguntaDificil,
+  TemaAReforzar,
+} from '../../domain/estadisticas';
 import { BarraTema } from './BarraTema';
 import { BotonReiniciar } from './BotonReiniciar';
 import estilos from './PanelProgreso.module.css';
 import { Resumen } from './Resumen';
+import { PreguntasDificiles } from './PreguntasDificiles';
 import { TemasAReforzar } from './TemasAReforzar';
 
 export interface PanelProgresoProps {
   resumen: Conteo;
   reforzar: readonly TemaAReforzar[];
   porTema: readonly EstadisticaTema[];
+  preguntasDificiles: readonly PreguntaDificil[];
   alReiniciar(): void;
   aviso?: ReactNode;
 }
@@ -18,6 +25,7 @@ export function PanelProgreso({
   resumen,
   reforzar,
   porTema,
+  preguntasDificiles,
   alReiniciar,
   aviso,
 }: PanelProgresoProps) {
@@ -54,6 +62,13 @@ export function PanelProgreso({
           </div>
         </div>
       </div>
+      <section className={`${estilos.panel} ${estilos.dificiles}`}>
+        <h3>Preguntas que más te costaron</h3>
+        <p className={estilos.explicacion}>
+          Se ordenan por la cantidad de veces que las marcaste como no sabidas.
+        </p>
+        <PreguntasDificiles preguntas={preguntasDificiles} />
+      </section>
     </>
   );
 }

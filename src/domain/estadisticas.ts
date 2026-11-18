@@ -1,5 +1,6 @@
 import { marcaDe } from './progreso';
-import type { Materia, Progreso, Tema } from './types';
+import { fallosDe } from './progreso';
+import type { Marca, Materia, Pregunta, Progreso, Tema } from './types';
 
 export interface Conteo {
   readonly total: number;
@@ -16,6 +17,13 @@ export interface EstadisticaTema extends Conteo {
 export interface TemaAReforzar extends EstadisticaTema {
   /** no / (si + no) */
   readonly tasaError: number;
+}
+
+export interface PreguntaDificil {
+  readonly pregunta: Pregunta;
+  readonly tema: Tema;
+  readonly fallos: number;
+  readonly marca: Marca | undefined;
 }
 
 function conteo(ids: readonly string[], p: Progreso): Conteo {
@@ -71,4 +79,24 @@ export function porcentajeAproximado(p: Progreso, cantidadPreguntas: number): nu
   if (cantidadPreguntas <= 0) return 0;
   const si = Object.values(p.marcas).filter((v) => v === 'si').length;
   return Math.min(100, Math.round((100 * si) / cantidadPreguntas));
+}
+
+/** Preguntas con fallos, ordenadas de mayor a menor dificultad acumulada. */
+export function preguntasMasDificiles(
+  materia: Materia,
+  progreso: Progreso,
+  limite = 10,
+): readonly PreguntaDificil[] {
+  return materia.temas
+    .flatMap((tema) =>
+      tema.preguntas.map((pregunta) => ({
+        pregunta,
+        tema,
+        fallos: fallosDe(progreso, pregunta.id),
+        marca: marcaDe(progreso, pregunta.id),
+      })),
+    )
+    .filter((item) => item.fallos > 0)
+    .sort((a, b) => b.fallos - a.fallos)
+    .slice(0, limite);
 }

@@ -2,10 +2,11 @@ import {
   estadisticasPorTema,
   estadisticasTema,
   porcentajeAproximado,
+  preguntasMasDificiles,
   resumenMateria,
   temasAReforzar,
 } from './estadisticas';
-import { marcar, progresoVacio } from './progreso';
+import { marcar, progresoVacio, registrarFallo } from './progreso';
 import type { Marca, Progreso } from './types';
 import { materia, materiaEjemplo, tema } from './testing/fixtures';
 
@@ -95,6 +96,26 @@ describe('estadisticas', () => {
       const p = prog({ a: 'si', b: 'si', c: 'si' });
       expect(porcentajeAproximado(p, 2)).toBe(100);
       expect(porcentajeAproximado(p, 0)).toBe(0);
+    });
+  });
+
+  describe('preguntasMasDificiles', () => {
+    it('ordena por cantidad de fallos y conserva tema y marca', () => {
+      let p = registrarFallo(progresoVacio, 'a1');
+      p = registrarFallo(registrarFallo(p, 'b1'), 'b1');
+      p = marcar(p, 'b1', 'si');
+      const r = preguntasMasDificiles(materiaEjemplo(), p);
+      expect(r.map((x) => [x.pregunta.id, x.fallos, x.tema.id, x.marca])).toEqual([
+        ['b1', 2, 't2', 'si'],
+        ['a1', 1, 't1', undefined],
+      ]);
+    });
+
+    it('ignora preguntas sin fallos y respeta el limite', () => {
+      let p = registrarFallo(progresoVacio, 'a1');
+      p = registrarFallo(p, 'b1');
+      expect(preguntasMasDificiles(materiaEjemplo(), p, 1)).toHaveLength(1);
+      expect(preguntasMasDificiles(materiaEjemplo(), progresoVacio)).toEqual([]);
     });
   });
 });

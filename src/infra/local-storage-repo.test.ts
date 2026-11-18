@@ -30,6 +30,33 @@ describe('local-storage-repo', () => {
     });
   });
 
+  it('guarda contadores de fallos y descarta cantidades invalidas', async () => {
+    const almacen = crearAlmacenFalso();
+    const repo = crearLocalStorageRepo(almacen);
+    await repo.guardar('a', { marcas: { x: 'no' }, fallos: { x: 3 } });
+    expect(await repo.cargar('a')).toEqual({ marcas: { x: 'no' }, fallos: { x: 3 } });
+
+    almacen.datos.set(
+      CLAVE_V2,
+      JSON.stringify({
+        version: 2,
+        materias: { a: { marcas: { x: 'no' }, fallos: { x: 3, y: -1, z: 'muchos' } } },
+      }),
+    );
+    expect(await repo.cargar('a')).toEqual({ marcas: { x: 'no' }, fallos: { x: 3 } });
+  });
+
+  it('un guardado atrasado no reduce contadores ya almacenados', async () => {
+    const almacen = crearAlmacenFalso();
+    const repo = crearLocalStorageRepo(almacen);
+    await repo.guardar('a', { marcas: { x: 'no' }, fallos: { x: 4 } });
+    await repo.guardar('a', { marcas: { x: 'no' }, fallos: { x: 2, y: 1 } });
+    expect(await repo.cargar('a')).toEqual({
+      marcas: { x: 'no' },
+      fallos: { x: 4, y: 1 },
+    });
+  });
+
   it('varias materias coexisten y guardar solo pisa la dada', async () => {
     const repo = crearLocalStorageRepo(crearAlmacenFalso());
     await repo.guardar('a', { marcas: { x: 'si' } });

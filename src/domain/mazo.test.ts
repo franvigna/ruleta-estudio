@@ -1,85 +1,55 @@
 import { mazosVacios, sacarDelMazo } from './mazo';
-import { marcar, progresoVacio } from './progreso';
+import { marcar, progresoVacio, registrarFallo } from './progreso';
 import { rngSecuencia } from './random';
 import { materiaEjemplo, tema } from './testing/fixtures';
 
 const t1 = materiaEjemplo().temas[0]!; // a1 a2 a3
-const contador = () => {
-  let n = 0;
-  return {
-    rng: () => {
-      n++;
-      return 0;
-    },
-    usos: () => n,
-  };
-};
 
-describe('sacarDelMazo', () => {
-  it('la primera extraccion mezcla y saca el ultimo', () => {
-    // [a1,a2,a3]; i=2: j=0 -> [a3,a2,a1]; i=1: j=0 -> [a2,a3,a1]; pop = a1
-    const r = sacarDelMazo(mazosVacios, t1, progresoVacio, null, rngSecuencia([0]))!;
+describe('sacarDelMazo ponderado', () => {
+  it('elige por posicion ponderada y consume un valor de rng', () => {
+    const rng = vi.fn(() => 0);
+    const r = sacarDelMazo(mazosVacios, t1, progresoVacio, null, rng)!;
     expect(r.preguntaId).toBe('a1');
-    expect(r.mazos['t1']).toEqual(['a2', 'a3']);
-    expect(mazosVacios).toEqual({});
+    expect(r.mazos).toBe(mazosVacios);
+    expect(rng).toHaveBeenCalledTimes(1);
   });
 
-  it('las siguientes extracciones no consumen rng', () => {
-    const r1 = sacarDelMazo(mazosVacios, t1, progresoVacio, null, rngSecuencia([0]))!;
-    const c = contador();
-    const r2 = sacarDelMazo(r1.mazos, t1, progresoVacio, r1.preguntaId, c.rng)!;
-    expect(r2.preguntaId).toBe('a3');
-    expect(c.usos()).toBe(0);
-    const r3 = sacarDelMazo(r2.mazos, t1, progresoVacio, r2.preguntaId, c.rng)!;
-    expect(r3.preguntaId).toBe('a2');
-    expect(c.usos()).toBe(0);
+  it('una pregunta con mas fallos ocupa una porcion mayor del pool', () => {
+    let p = progresoVacio;
+    p = registrarFallo(registrarFallo(registrarFallo(p, 'a2'), 'a2'), 'a2');
+    // Pesos: a1=1, a2=4, a3=1. 0.2*6=1.2 cae en a2.
+    expect(sacarDelMazo(mazosVacios, t1, p, null, () => 0.2)?.preguntaId).toBe('a2');
+    // Sin ponderacion, el mismo valor cae en a1 (0.2*3=.6).
+    expect(sacarDelMazo(mazosVacios, t1, progresoVacio, null, () => 0.2)?.preguntaId).toBe('a1');
   });
 
-  it('filtra las si marcadas en el medio', () => {
-    const r1 = sacarDelMazo(mazosVacios, t1, progresoVacio, null, rngSecuencia([0]))!;
-    const p = marcar(progresoVacio, 'a3', 'si');
-    const r2 = sacarDelMazo(r1.mazos, t1, p, 'a1', rngSecuencia([0]))!;
-    expect(r2.preguntaId).toBe('a2');
-    expect(r2.mazos['t1']).toEqual([]);
+  it('evita repetir la anterior cuando hay alternativas', () => {
+    expect(sacarDelMazo(mazosVacios, t1, progresoVacio, 'a1', () => 0)?.preguntaId).toBe('a2');
   });
 
-  it('las no quedan en el mazo', () => {
-    const r1 = sacarDelMazo(mazosVacios, t1, progresoVacio, null, rngSecuencia([0]))!;
-    const p = marcar(progresoVacio, 'a3', 'no');
-    const r2 = sacarDelMazo(r1.mazos, t1, p, 'a1', rngSecuencia([0]))!;
-    expect(r2.preguntaId).toBe('a3');
-  });
-
-  it('al rearmar rota si el ultimo es la anterior', () => {
-    // con rng 0 el mazo mezclado es [a2,a3,a1]: ultimo a1. anterior=a1 -> [a1,a2,a3], sale a3
-    const r = sacarDelMazo(mazosVacios, t1, progresoVacio, 'a1', rngSecuencia([0]))!;
-    expect(r.preguntaId).toBe('a3');
-    expect(r.mazos['t1']).toEqual(['a1', 'a2']);
-  });
-
-  it('no rota si la anterior no es la ultima', () => {
-    const r = sacarDelMazo(mazosVacios, t1, progresoVacio, 'a2', rngSecuencia([0]))!;
-    expect(r.preguntaId).toBe('a1');
-  });
-
-  it('con un solo pendiente no rota: puede repetirse', () => {
+  it('con un solo pendiente puede repetirlo', () => {
     const t = tema('u', 'CC', ['z1']);
-    const r = sacarDelMazo(mazosVacios, t, progresoVacio, 'z1', rngSecuencia([0]))!;
-    expect(r.preguntaId).toBe('z1');
+    expect(sacarDelMazo(mazosVacios, t, progresoVacio, 'z1', () => 0)?.preguntaId).toBe('z1');
+  });
+
+  it('las no siguen disponibles y las si salen del pool', () => {
+    let p = marcar(progresoVacio, 'a1', 'si');
+    p = marcar(p, 'a2', 'no');
+    expect(sacarDelMazo(mazosVacios, t1, p, null, () => 0)?.preguntaId).toBe('a2');
   });
 
   it('tema completo o sin preguntas devuelve null sin consumir rng', () => {
-    const c = contador();
+    const rng = vi.fn(() => 0);
     let p = progresoVacio;
     for (const id of ['a1', 'a2', 'a3']) p = marcar(p, id, 'si');
-    expect(sacarDelMazo(mazosVacios, t1, p, null, c.rng)).toBeNull();
-    expect(sacarDelMazo(mazosVacios, tema('v', 'CC', []), progresoVacio, null, c.rng)).toBeNull();
-    expect(c.usos()).toBe(0);
+    expect(sacarDelMazo(mazosVacios, t1, p, null, rng)).toBeNull();
+    expect(sacarDelMazo(mazosVacios, tema('v', 'CC', []), progresoVacio, null, rng)).toBeNull();
+    expect(rng).not.toHaveBeenCalled();
   });
 
-  it('mazo con ids viejos todos sabidos se rearma', () => {
-    const p = marcar(progresoVacio, 'a1', 'si');
-    const r = sacarDelMazo({ t1: ['a1'] }, t1, p, null, rngSecuencia([0]))!;
-    expect(['a2', 'a3']).toContain(r.preguntaId);
+  it('el extremo alto del rng devuelve la ultima candidata', () => {
+    expect(
+      sacarDelMazo(mazosVacios, t1, progresoVacio, null, rngSecuencia([0.999]))?.preguntaId,
+    ).toBe('a3');
   });
 });

@@ -41,6 +41,7 @@ export const ColumnaTarjeta = forwardRef<HTMLElement, ColumnaTarjetaProps>(funct
             pregunta={contenido.pregunta}
             dada={contenido.dada}
             repaso={contenido.repaso}
+            marca={contenido.marca}
             alVoltear={alVoltear}
           />
           <Acciones

@@ -11,6 +11,7 @@ import {
 import {
   limpiarHuerfanos as limpiarHuerfanosDe,
   marcar as marcarEn,
+  registrarFallo,
   reiniciar as progresoReiniciado,
 } from '../../domain/progreso';
 import type { Marca, MateriaId, PreguntaId, Progreso } from '../../domain/types';
@@ -21,7 +22,7 @@ interface Acciones {
   asegurarCargado(materiaId: MateriaId): void;
   /** Ultimo progreso conocido (sincronico, para handlers). */
   leerUltimo(materiaId: MateriaId): Progreso | null;
-  marcar(materiaId: MateriaId, id: PreguntaId, m: Marca): void;
+  marcar(materiaId: MateriaId, id: PreguntaId, m: Marca, contarFallo: boolean): void;
   reiniciar(materiaId: MateriaId): void;
   limpiarHuerfanos(materiaId: MateriaId, ids: ReadonlySet<PreguntaId>): void;
 }
@@ -68,10 +69,11 @@ export function ProgresoProvider({ repositorio, persistente, children }: Progres
           });
       },
       leerUltimo: (materiaId) => ultimo.current.get(materiaId) ?? null,
-      marcar(materiaId, id, m) {
+      marcar(materiaId, id, m, contarFallo) {
         const actual = ultimo.current.get(materiaId);
         if (!actual) return;
-        const siguiente = marcarEn(actual, id, m);
+        let siguiente = marcarEn(actual, id, m);
+        if (contarFallo) siguiente = registrarFallo(siguiente, id);
         if (siguiente === actual) return;
         ultimo.current.set(materiaId, siguiente);
         despachar({ tipo: 'marcado', materiaId, progreso: siguiente });
@@ -107,7 +109,7 @@ function useContextoProgreso(): ValorContexto {
 export interface UsoProgreso {
   /** null mientras carga. */
   progreso: Progreso | null;
-  marcar(id: PreguntaId, m: Marca): void;
+  marcar(id: PreguntaId, m: Marca, contarFallo?: boolean): void;
   reiniciar(): void;
   limpiarHuerfanos(ids: ReadonlySet<PreguntaId>): void;
   /** Ultimo progreso conocido, leido de un ref (para handlers). */
@@ -122,7 +124,8 @@ export function useProgreso(materiaId: MateriaId): UsoProgreso {
   const entrada = estado.porMateria[materiaId];
   const progreso = entrada?.estado === 'listo' ? entrada.progreso : null;
   const marcar = useCallback(
-    (id: PreguntaId, m: Marca) => acciones.marcar(materiaId, id, m),
+    (id: PreguntaId, m: Marca, contarFallo = false) =>
+      acciones.marcar(materiaId, id, m, contarFallo),
     [acciones, materiaId],
   );
   const reiniciar = useCallback(() => acciones.reiniciar(materiaId), [acciones, materiaId]);

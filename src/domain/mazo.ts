@@ -1,5 +1,5 @@
-import { estaPendiente, pendientesDelTema } from './progreso';
-import { mezclar, type Rng } from './random';
+import { fallosDe, pendientesDelTema } from './progreso';
+import type { Rng } from './random';
 import type { PreguntaId, Progreso, Tema, TemaId } from './types';
 
 export type Mazos = Readonly<Record<TemaId, readonly PreguntaId[]>>;
@@ -12,10 +12,10 @@ export interface ResultadoSacar {
 }
 
 /**
- * Replica de sacar(tid) del legacy. El mazo guarda ids; las 'si' marcadas desde
- * que se armo se filtran; al vaciarse se rearma mezclando los pendientes y, si
- * el ultimo es la pregunta anterior (y hay mas de una), pasa al principio.
- * Sin pendientes devuelve null y no consume rng.
+ * Seleccion ponderada entre pendientes. Cada pregunta pesa 1 + sus fallos, de
+ * modo que las que mas costaron tienen mas probabilidades. Evita repetir la
+ * anterior si existe otra alternativa. `mazos` se conserva como estado
+ * compatible de la estrategia, aunque la seleccion ponderada no necesita cola.
  */
 export function sacarDelMazo(
   mazos: Mazos,
@@ -24,18 +24,15 @@ export function sacarDelMazo(
   anteriorId: PreguntaId | null,
   rng: Rng,
 ): ResultadoSacar | null {
-  let m = (mazos[tema.id] ?? []).filter((id) => estaPendiente(p, id));
-  if (m.length === 0) {
-    const pendientes = pendientesDelTema(tema, p);
-    if (pendientes.length === 0) return null;
-    m = mezclar(
-      pendientes.map((q) => q.id),
-      rng,
-    );
-    if (m.length > 1 && m[m.length - 1] === anteriorId) {
-      m.unshift(m.pop() as PreguntaId);
-    }
+  const pendientes = pendientesDelTema(tema, p);
+  if (pendientes.length === 0) return null;
+  const sinAnterior = pendientes.filter((q) => q.id !== anteriorId);
+  const candidatas = sinAnterior.length > 0 ? sinAnterior : pendientes;
+  const total = candidatas.reduce((suma, q) => suma + 1 + fallosDe(p, q.id), 0);
+  let objetivo = rng() * total;
+  for (const pregunta of candidatas) {
+    objetivo -= 1 + fallosDe(p, pregunta.id);
+    if (objetivo < 0) return { preguntaId: pregunta.id, mazos };
   }
-  const preguntaId = m.pop() as PreguntaId;
-  return { preguntaId, mazos: { ...mazos, [tema.id]: m } };
+  return { preguntaId: candidatas[candidatas.length - 1]!.id, mazos };
 }

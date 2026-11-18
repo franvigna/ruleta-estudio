@@ -48,6 +48,14 @@ describe('Tarjeta', () => {
     expect(tarjeta.style.getPropertyValue('--area')).toBe('var(--area-CC)');
   });
 
+  it.each([
+    ['si', 'si'],
+    ['no', 'no'],
+  ] as const)('refleja la marca %s para colorear la tarjeta', (_, marca) => {
+    montar({ marca });
+    expect(screen.getByRole('button', { name: /Tarjeta/ })).toHaveAttribute('data-marca', marca);
+  });
+
   it('sin etiqueta no pinta insignia y con repaso la pinta', () => {
     montar({ pregunta: { ...pregunta, etiqueta: undefined }, repaso: true });
     expect(screen.queryByText('Tomada en parciales')).not.toBeInTheDocument();

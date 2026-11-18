@@ -38,7 +38,10 @@ export function PantallaCatalogo() {
     };
   }, [contenido]);
 
-  const items = useMemo(() => (resultado.estado === 'listo' ? resultado.items : []), [resultado]);
+  const items = useMemo(
+    () => (resultado.estado === 'listo' ? resultado.items.filter((item) => !item.ejemplo) : []),
+    [resultado],
+  );
   const ids = useMemo(() => items.map((item) => item.id), [items]);
   const progresos = useProgresosDe(ids);
   const itemsConAvance = useMemo<readonly ItemConAvance[]>(

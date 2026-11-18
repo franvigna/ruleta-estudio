@@ -78,6 +78,7 @@ export const CATALOGO_DEMO = [
     id: 'otra',
     nombre: 'Otra materia',
     descripcion: 'Segunda materia de prueba',
+    ejemplo: true,
     cantidadTemas: 1,
     cantidadPreguntas: 2,
   },

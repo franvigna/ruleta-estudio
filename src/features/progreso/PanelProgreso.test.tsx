@@ -14,6 +14,19 @@ describe('PanelProgreso', () => {
         resumen={{ total: 7, si: 1, no: 2, sin: 4, pct: 14 }}
         reforzar={[aReforzar(grafos)]}
         porTema={[grafos, complejidad]}
+        preguntasDificiles={[
+          {
+            pregunta: {
+              id: 'p1',
+              tipo: 'teorica',
+              enunciado: '<p>¿Qué es BFS?</p>',
+              respuesta: '<p>Un recorrido.</p>',
+            },
+            tema: grafos.tema,
+            fallos: 3,
+            marca: 'no',
+          },
+        ]}
         alReiniciar={vi.fn()}
       />,
     );
@@ -28,6 +41,11 @@ describe('PanelProgreso', () => {
     expect(screen.getAllByText('Sin responder').length).toBeGreaterThan(0);
     expect(screen.getAllByRole('img')).toHaveLength(2);
     expect(
+      screen.getByRole('heading', { name: 'Preguntas que más te costaron' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('¿Qué es BFS?')).toBeInTheDocument();
+    expect(screen.getByText('3 fallos')).toBeInTheDocument();
+    expect(
       screen.getByRole('img', { name: '0 sabidas, 0 no sabidas, 3 sin responder' }),
     ).toBeInTheDocument();
   });
@@ -37,6 +55,7 @@ describe('PanelProgreso', () => {
       resumen: { total: 0, si: 0, no: 0, sin: 0, pct: 0 },
       reforzar: [],
       porTema: [],
+      preguntasDificiles: [],
       alReiniciar: vi.fn(),
     };
     const { rerender } = render(<PanelProgreso {...props} />);
@@ -52,6 +71,7 @@ describe('PanelProgreso', () => {
         resumen={{ total: 0, si: 0, no: 0, sin: 0, pct: 0 }}
         reforzar={[]}
         porTema={[]}
+        preguntasDificiles={[]}
         alReiniciar={alReiniciar}
       />,
     );

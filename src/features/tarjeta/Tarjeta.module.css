@@ -11,6 +11,14 @@
   border-radius: 18px;
 }
 
+.sabida {
+  --fondo-tarjeta: #e2f8e9;
+}
+
+.noSabida {
+  --fondo-tarjeta: #ffe1e3;
+}
+
 .dada {
   transform: rotateY(180deg);
 }
@@ -19,7 +27,8 @@
   grid-area: 1 / 1;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background: var(--blanco);
+  background: var(--fondo-tarjeta, var(--blanco));
+  transition: background-color 0.25s ease;
   border: 2px solid var(--tinta);
   border-radius: 18px;
   box-shadow: var(--sombra-ficha);

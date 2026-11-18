@@ -1,5 +1,5 @@
 import type { CSSProperties, KeyboardEvent } from 'react';
-import type { Pregunta } from '../../domain/types';
+import type { Marca, Pregunta } from '../../domain/types';
 import { Chip, Insignia, varArea } from '../../shared/ui';
 import estilos from './Tarjeta.module.css';
 
@@ -8,10 +8,11 @@ export interface TarjetaProps {
   pregunta: Pregunta;
   dada: boolean;
   repaso: boolean;
+  marca?: Marca;
   alVoltear(): void;
 }
 
-export function Tarjeta({ tema, pregunta, dada, repaso, alVoltear }: TarjetaProps) {
+export function Tarjeta({ tema, pregunta, dada, repaso, marca, alVoltear }: TarjetaProps) {
   const alTeclear = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -23,7 +24,15 @@ export function Tarjeta({ tema, pregunta, dada, repaso, alVoltear }: TarjetaProp
   return (
     <div className={estilos.escena}>
       <div
-        className={dada ? `${estilos.tarjeta} ${estilos.dada}` : estilos.tarjeta}
+        className={[
+          estilos.tarjeta,
+          dada ? estilos.dada : '',
+          marca === 'si' ? estilos.sabida : '',
+          marca === 'no' ? estilos.noSabida : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        data-marca={marca}
         role="button"
         tabIndex={0}
         aria-pressed={dada}

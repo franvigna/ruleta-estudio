@@ -62,4 +62,6 @@ export interface ItemCatalogo {
  */
 export interface Progreso {
   readonly marcas: Readonly<Record<PreguntaId, Marca>>;
+  /** Cantidad de presentaciones en las que se marco "no". Ausente en progresos v2 antiguos. */
+  readonly fallos?: Readonly<Record<PreguntaId, number>>;
 }

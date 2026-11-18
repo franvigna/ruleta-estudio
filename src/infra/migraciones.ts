@@ -58,7 +58,7 @@ export function migrarV1aV2(almacen: AlmacenClaveValor): ResultadoMigracion {
       ([id, m]) => existentes[id] !== undefined && existentes[id] !== m,
     );
     const combinadas = { ...marcasV1, ...existentes };
-    doc.materias[MATERIA_V1] = { marcas: combinadas };
+    doc.materias[MATERIA_V1] = { ...doc.materias[MATERIA_V1], marcas: combinadas };
     almacen.setItem(CLAVE_V2, JSON.stringify(doc));
 
     const releido = almacen.getItem(CLAVE_V2);

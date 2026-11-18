@@ -1,0 +1,46 @@
+.lista {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--borde-suave);
+  border-radius: 12px;
+  background: var(--repaso-fondo);
+}
+
+.texto {
+  min-width: 0;
+}
+
+.texto p {
+  margin: 2px 0 0;
+}
+
+.tema {
+  display: block;
+  color: var(--tinta-2);
+  font: 700 13px var(--display);
+}
+
+.fallos {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border: 2px solid var(--tinta);
+  border-radius: 999px;
+  background: var(--marca-no);
+  font: 750 13px var(--display);
+}
+
+.vacio {
+  margin: 0;
+  color: var(--tinta-2);
+}

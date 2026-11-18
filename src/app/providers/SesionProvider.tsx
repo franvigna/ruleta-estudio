@@ -79,7 +79,16 @@ export function SesionProvider({ materia, children }: { materia: Materia; childr
       marcar(m) {
         const s = ref.current;
         if (!puedeMarcar(s) || s.contenido.tipo !== 'tarjeta') return;
-        marcarProgreso(s.contenido.preguntaId, m);
+        const preguntaId = s.contenido.preguntaId;
+        const contarFallo = m === 'no' && !s.contenido.falloContado;
+        marcarProgreso(preguntaId, m, contarFallo);
+        if (contarFallo) {
+          aplicar((actual) =>
+            actual.contenido.tipo === 'tarjeta' && actual.contenido.preguntaId === preguntaId
+              ? { ...actual, contenido: { ...actual.contenido, falloContado: true } }
+              : actual,
+          );
+        }
       },
       reiniciar() {
         reiniciarProgreso();

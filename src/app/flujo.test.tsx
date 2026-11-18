@@ -22,15 +22,20 @@ describe('flujo integrado de estudio', () => {
 
     await user.click(screen.getByRole('button', { name: 'No me la sabía' }));
     await waitFor(async () => {
-      expect((await repositorio.cargar('demo')).marcas).toEqual({ a1: 'no' });
+      expect(await repositorio.cargar('demo')).toEqual({ marcas: { a1: 'no' }, fallos: { a1: 1 } });
     });
     expect(screen.getByText('Queda para repasar.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Tarjeta/ })).toHaveAttribute('data-marca', 'no');
+
+    await user.click(screen.getByRole('button', { name: 'No me la sabía' }));
+    expect((await repositorio.cargar('demo')).fallos).toEqual({ a1: 1 });
 
     await user.click(screen.getByRole('button', { name: 'Me la sabía' }));
     await waitFor(async () => {
       expect((await repositorio.cargar('demo')).marcas).toEqual({ a1: 'si' });
     });
     expect(screen.getByText('Sale de la ruleta.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Tarjeta/ })).toHaveAttribute('data-marca', 'si');
   });
 
   it('reinicia el progreso solamente después de la segunda confirmacion', async () => {

@@ -14,6 +14,8 @@ export type Contenido =
       readonly dada: boolean;
       readonly marcarVisible: boolean;
       readonly repaso: boolean;
+      /** Evita sumar dos fallos por clics repetidos en la misma presentacion. */
+      readonly falloContado: boolean;
     };
 
 export interface EstadoSesion<E> {
@@ -84,6 +86,7 @@ export function mostrar<E>(
       dada: false,
       marcarVisible: false,
       repaso: marcaDe(ctx.progreso, r.preguntaId) === 'no',
+      falloContado: false,
     },
   };
 }

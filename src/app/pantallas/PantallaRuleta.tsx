@@ -81,7 +81,7 @@ export function PantallaRuleta() {
       pregunta,
       dada: contenido.dada,
       marcarVisible: contenido.marcarVisible,
-      repaso: contenido.repaso,
+      repaso: contenido.repaso && progreso?.marcas[pregunta.id] !== 'si',
       marca: progreso?.marcas[pregunta.id],
     };
   }, [contenido, materia, progreso]);
