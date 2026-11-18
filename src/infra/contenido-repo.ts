@@ -55,7 +55,14 @@ export function crearContenidoRepo(cargadores: {
 
   return {
     catalogo() {
-      catalogoCache ??= cargarCatalogo();
+      if (catalogoCache === null) {
+        const promesa = cargarCatalogo();
+        catalogoCache = promesa;
+        // Un rechazo no se cachea: el siguiente intento reintenta.
+        promesa.catch(() => {
+          if (catalogoCache === promesa) catalogoCache = null;
+        });
+      }
       return catalogoCache;
     },
     async materia(id) {
@@ -63,8 +70,12 @@ export function crearContenidoRepo(cargadores: {
       if (cargador === undefined) return null;
       let promesa = materiasCache.get(id);
       if (promesa === undefined) {
-        promesa = cargarMateria(id, cargador);
-        materiasCache.set(id, promesa);
+        const nueva = cargarMateria(id, cargador);
+        promesa = nueva;
+        materiasCache.set(id, nueva);
+        nueva.catch(() => {
+          if (materiasCache.get(id) === nueva) materiasCache.delete(id);
+        });
       }
       return promesa;
     },

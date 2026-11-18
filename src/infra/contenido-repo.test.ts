@@ -108,4 +108,34 @@ describe('indexarPorId', () => {
     ).toEqual({ 'mat-a': f, 'mat-b': g });
     expect(indexarPorId({})).toEqual({});
   });
+
+  it('un fallo del cargador no se cachea: el siguiente intento reintenta', async () => {
+    let llamadas = 0;
+    const repo = crearContenidoRepo({
+      catalogo: () => {
+        llamadas++;
+        return llamadas === 1 ? Promise.reject(new Error('red')) : Promise.resolve(catalogoValido);
+      },
+      materias: {
+        'mat-a': () => {
+          llamadas++;
+          return llamadas === 3
+            ? Promise.reject(new Error('red'))
+            : Promise.resolve(materiaValida());
+        },
+      },
+    });
+    await expect(repo.catalogo()).rejects.toThrow('red');
+    expect(await repo.catalogo()).toEqual(catalogoValido);
+    await expect(repo.materia('mat-a')).rejects.toThrow('red');
+    expect((await repo.materia('mat-a'))?.id).toBe('mat-a');
+  });
+
+  it('con exito el cargador se llama una sola vez', async () => {
+    const cargador = vi.fn(() => Promise.resolve(materiaValida()));
+    const repo = crearContenidoRepo({ catalogo: null, materias: { 'mat-a': cargador } });
+    await repo.materia('mat-a');
+    await repo.materia('mat-a');
+    expect(cargador).toHaveBeenCalledTimes(1);
+  });
 });

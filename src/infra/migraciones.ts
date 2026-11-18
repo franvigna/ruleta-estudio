@@ -3,6 +3,7 @@ import { CLAVE_V2, parsearAlmacenV2, type AlmacenV2 } from './local-storage-repo
 import type { AlmacenClaveValor } from './progreso-repo';
 
 export const CLAVE_V1 = 'ruleta-pa:progreso:v1';
+export const CLAVE_RESPALDO_V1 = `${CLAVE_V1}:respaldo`;
 export const MATERIA_V1 = 'programacion-avanzada';
 
 export type ResultadoMigracion =
@@ -20,7 +21,10 @@ function parsearV1(texto: string): Record<string, Marca> | null {
     return null;
   }
   if (typeof crudo !== 'object' || crudo === null) return null;
+  if (Array.isArray(crudo)) return null;
   const r = (crudo as { r?: unknown }).r;
+  // Sin clave `r` equivale a vacio en el legacy (JSON.parse(s).r || {}).
+  if (r === undefined) return {};
   if (typeof r !== 'object' || r === null || Array.isArray(r)) return null;
   const marcas: Record<string, Marca> = {};
   for (const [id, m] of Object.entries(r)) {
@@ -49,7 +53,11 @@ export function migrarV1aV2(almacen: AlmacenClaveValor): ResultadoMigracion {
       }
     }
 
-    const combinadas = { ...marcasV1, ...doc.materias[MATERIA_V1]?.marcas };
+    const existentes = doc.materias[MATERIA_V1]?.marcas ?? {};
+    const hayConflicto = Object.entries(marcasV1).some(
+      ([id, m]) => existentes[id] !== undefined && existentes[id] !== m,
+    );
+    const combinadas = { ...marcasV1, ...existentes };
     doc.materias[MATERIA_V1] = { marcas: combinadas };
     almacen.setItem(CLAVE_V2, JSON.stringify(doc));
 
@@ -60,6 +68,13 @@ export function migrarV1aV2(almacen: AlmacenClaveValor): ResultadoMigracion {
       if (marcasReleidas[id] !== combinadas[id]) {
         return { estado: 'error', causa: new Error(`La relectura no coincide para ${id}`) };
       }
+    }
+
+    if (hayConflicto) {
+      // Gana v2, pero el original de v1 se conserva antes de borrarlo.
+      let clave = CLAVE_RESPALDO_V1;
+      for (let n = 2; almacen.getItem(clave) !== null; n++) clave = `${CLAVE_RESPALDO_V1}-${n}`;
+      almacen.setItem(clave, textoV1);
     }
 
     almacen.removeItem(CLAVE_V1);
