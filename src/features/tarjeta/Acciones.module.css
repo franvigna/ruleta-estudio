@@ -1,0 +1,26 @@
+.acciones {
+  grid-row: 3;
+  align-self: start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.marcar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.q {
+  font: 700 15px var(--display);
+}
+
+.estado {
+  color: var(--tinta-2);
+  font-size: 14px;
+}

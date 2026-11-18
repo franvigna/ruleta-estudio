@@ -1,0 +1,106 @@
+.ruedaBox {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.rueda {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.seg path {
+  stroke: var(--blanco);
+  stroke-width: 2;
+}
+
+.seg.gana path {
+  stroke: var(--tinta);
+  stroke-width: 4;
+}
+
+.seg text {
+  font: 600 11.5px var(--display);
+  fill: var(--tinta);
+  pointer-events: none;
+}
+
+.seg.completo path {
+  opacity: 0.3;
+}
+
+.seg.completo text {
+  opacity: 0.45;
+}
+
+.puntero {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: -14px;
+  width: 34px;
+  height: 44px;
+  margin-left: -17px;
+  transform-origin: 50% 8px;
+  filter: drop-shadow(2px 2px 0 rgba(23, 36, 71, 0.25));
+}
+
+.tic {
+  animation: tic 0.12s ease-out;
+}
+
+@keyframes tic {
+  0% {
+    transform: rotate(-14deg);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.centro {
+  cursor: pointer;
+}
+
+.centro text {
+  font: 800 15px var(--display);
+  fill: var(--blanco);
+  pointer-events: none;
+}
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  justify-content: center;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+
+.leyenda span::before {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  background: var(--c);
+}
+
+@media (max-width: 860px) {
+  .ruedaBox {
+    max-width: min(420px, 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tic {
+    animation: none;
+  }
+}

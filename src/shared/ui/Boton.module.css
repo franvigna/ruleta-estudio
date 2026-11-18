@@ -1,0 +1,27 @@
+.boton {
+  font: 700 15px var(--display);
+  color: var(--tinta);
+  background: var(--blanco);
+  border: 2px solid var(--tinta);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  box-shadow: var(--sombra-boton);
+}
+
+.boton:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--tinta);
+}
+
+.si[aria-pressed='true'] {
+  background: var(--marca-si);
+}
+
+.no[aria-pressed='true'] {
+  background: var(--marca-no);
+}
+
+.armado {
+  background: var(--marca-no);
+}

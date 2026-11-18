@@ -1,0 +1,13 @@
+.vacio {
+  grid-row: 2;
+  border: 2px dashed var(--vacio-borde);
+  border-radius: 18px;
+  padding: 36px 28px;
+  color: var(--tinta-2);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+}
+
+.vacio strong {
+  color: var(--tinta);
+}

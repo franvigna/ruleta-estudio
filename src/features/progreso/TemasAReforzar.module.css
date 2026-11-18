@@ -1,0 +1,20 @@
+.reforzar {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.reforzar li {
+  margin: 8px 0;
+}
+
+.reforzar small {
+  display: block;
+  color: var(--tinta-2);
+  font-size: 14px;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--tinta-2);
+  font-size: 16px;
+}

@@ -1,0 +1,17 @@
+.lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vacio {
+  border: 2px dashed var(--vacio-borde);
+  border-radius: 18px;
+  padding: 36px 28px;
+  color: var(--tinta-2);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+}

@@ -1,0 +1,147 @@
+.escena {
+  grid-row: 2;
+  perspective: 1600px;
+}
+
+.tarjeta {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.3, 0.7, 0.2, 1);
+  cursor: pointer;
+  border-radius: 18px;
+}
+
+.dada {
+  transform: rotateY(180deg);
+}
+
+.cara {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--blanco);
+  border: 2px solid var(--tinta);
+  border-radius: 18px;
+  box-shadow: var(--sombra-ficha);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+}
+
+.dorso {
+  transform: rotateY(180deg);
+}
+
+.franja {
+  height: 14px;
+  background: var(--area);
+}
+
+.cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px 0;
+}
+
+.cuerpo {
+  padding: 18px 24px 8px;
+  flex: 1;
+}
+
+.frente .cuerpo {
+  background-image: repeating-linear-gradient(transparent 0 33px, var(--linea-ficha) 33px 34px);
+  background-position: 0 6px;
+}
+
+.pregunta {
+  font: 700 clamp(20px, 2.3vw, 25px) / 1.35 var(--display);
+  letter-spacing: -0.005em;
+}
+
+.pregunta p {
+  margin: 0 0 10px;
+}
+
+.pregunta :global(.opts),
+.respuesta :global(.opts) {
+  font: 400 17px / 1.5 var(--texto);
+  margin: 10px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.pregunta :global(.opts) li,
+.respuesta :global(.opts) li {
+  margin: 6px 0;
+}
+
+.respuesta {
+  font-size: 17px;
+}
+
+.respuesta p {
+  margin: 0 0 12px;
+}
+
+.respuesta ul,
+.respuesta ol {
+  padding-left: 22px;
+  margin: 0 0 12px;
+}
+
+.respuesta li {
+  margin: 4px 0;
+}
+
+.nota {
+  font-style: italic;
+  color: var(--tinta-2);
+  font-size: 15px;
+  border-left: 4px solid var(--area);
+  padding: 4px 0 4px 12px;
+  margin: 0 0 14px;
+}
+
+.pregunta :global(.tbl),
+.respuesta :global(.tbl) {
+  overflow-x: auto;
+  margin: 4px 0 14px;
+}
+
+.pregunta :global(.tbl) table,
+.respuesta :global(.tbl) table {
+  border-collapse: collapse;
+  font-size: 15px;
+  min-width: 100%;
+}
+
+.pregunta :global(.tbl) th,
+.pregunta :global(.tbl) td,
+.respuesta :global(.tbl) th,
+.respuesta :global(.tbl) td {
+  border: 1px solid var(--borde-tabla);
+  padding: 6px 9px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.pregunta :global(.tbl) th,
+.respuesta :global(.tbl) th {
+  background: var(--superficie-suave);
+  font-family: var(--display);
+}
+
+.pie {
+  padding: 10px 24px 16px;
+  color: var(--tinta-2);
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta {
+    transition: none;
+  }
+}

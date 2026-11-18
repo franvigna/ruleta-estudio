@@ -1,0 +1,9 @@
+.kbd {
+  font: 700 12px var(--texto);
+  border: 1.5px solid var(--tinta-2);
+  border-bottom-width: 3px;
+  border-radius: 6px;
+  padding: 1px 6px;
+  background: var(--blanco);
+  color: var(--tinta);
+}

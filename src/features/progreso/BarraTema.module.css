@@ -1,0 +1,66 @@
+.fila {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.1fr) 2fr 104px;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--linea-fila);
+}
+
+.fila:first-of-type {
+  border-top: 0;
+}
+
+.nom {
+  font: 700 15px var(--display);
+}
+
+.nom::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 7px;
+  background: var(--c);
+}
+
+.barra {
+  display: flex;
+  height: 14px;
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--superficie-suave);
+  border: 1px solid var(--borde-suave);
+}
+
+.si {
+  background: var(--c);
+}
+
+.no {
+  background: var(--barra-no);
+}
+
+.num {
+  font-size: 14px;
+  color: var(--tinta-2);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.num b {
+  color: var(--tinta);
+  font-size: 16px;
+}
+
+@media (max-width: 860px) {
+  .fila {
+    grid-template-columns: 1fr auto;
+  }
+
+  .barra {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

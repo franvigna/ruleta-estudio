@@ -1,0 +1,28 @@
+.chip {
+  font: 700 14px/1 var(--display);
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: var(--area);
+  color: var(--tinta);
+}
+
+.contorno {
+  font: 700 14px/1 var(--display);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--tinta);
+}
+
+.insignia {
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--superficie-suave);
+  color: var(--tinta-2);
+}
+
+.repaso {
+  background: var(--repaso-fondo);
+  color: var(--repaso-texto);
+}

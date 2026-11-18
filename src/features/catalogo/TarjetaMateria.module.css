@@ -1,0 +1,77 @@
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding: 20px 22px;
+  background: var(--blanco);
+  color: var(--tinta);
+  text-decoration: none;
+  border: 2px solid var(--tinta);
+  border-radius: 18px;
+  box-shadow: var(--sombra-ficha);
+  transition:
+    transform 0.12s,
+    box-shadow 0.12s;
+}
+
+.tarjeta:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 7px 7px 0 var(--tinta);
+}
+
+.tarjeta:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 var(--tinta);
+}
+
+.cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.nombre {
+  font: 800 22px / 1.15 var(--display);
+  letter-spacing: -0.01em;
+}
+
+.descripcion {
+  color: var(--tinta-2);
+  font-size: 16px;
+}
+
+.meta {
+  color: var(--tinta-2);
+  font-size: 14px;
+  margin-top: auto;
+}
+
+.avance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 700 14px var(--display);
+}
+
+.barra {
+  flex: 1;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--superficie-suave);
+  border: 1px solid var(--borde-suave);
+}
+
+.relleno {
+  display: block;
+  height: 100%;
+  background: var(--marca-si);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta {
+    transition: none;
+  }
+}

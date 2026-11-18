@@ -1,0 +1,32 @@
+.materia {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.materia > p[role='status'] {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 12px 20px 0;
+}
+
+.mensaje {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+.mensaje h1 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+
+.enlace {
+  display: inline-block;
+  margin-top: 12px;
+  font: 700 15px var(--display);
+  color: var(--tinta);
+}

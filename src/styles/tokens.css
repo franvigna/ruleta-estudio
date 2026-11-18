@@ -1,0 +1,44 @@
+/*
+ * Variables de diseño globales. Tema claro unicamente.
+ * Los colores de las areas de cada materia NO viven aca: llegan desde
+ * materia.json como --area-<id> y --area-<id>-2 (ver shared/ui/areas.ts).
+ */
+:root {
+  color-scheme: light;
+
+  /* Papel y tinta */
+  --papel: #f7fafd;
+  --cuadricula: #e3ebf5;
+  --tinta: #172447;
+  --tinta-2: #4a5877;
+  --blanco: #ffffff;
+
+  /* Superficies y bordes suaves */
+  --superficie-suave: #eef2f9;
+  --borde-suave: #d4deec;
+  --borde-tabla: #c9d5e6;
+  --linea-ficha: #dce6f3;
+  --linea-fila: #e3eaf3;
+  --vacio-borde: #afc0da;
+
+  /* Estados de marca */
+  --marca-si: #6fd99a;
+  --marca-no: #ffb3b8;
+  --barra-no: #f2707a;
+  --repaso-fondo: #ffe1e3;
+  --repaso-texto: #8a1c27;
+
+  /* Foco y tipografia */
+  --foco: #2b6fe0;
+  --display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Segoe UI', system-ui,
+    sans-serif;
+  --texto: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+
+  /* Sombras duras */
+  --sombra-boton: 3px 3px 0 var(--tinta);
+  --sombra-ficha: 6px 6px 0 var(--tinta);
+
+  /* Layout */
+  --ancho-max: 1180px;
+  --corte-movil: 860px;
+}
