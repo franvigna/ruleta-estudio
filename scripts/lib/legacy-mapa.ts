@@ -1,0 +1,21 @@
+/** Mapa de ids de tema del legacy (build_data.py) a los ids nuevos. */
+export const TEMA_LEGACY_A_NUEVO: Record<string, string> = {
+  fund: 'cc-fundamentos',
+  recur: 'da-recursividad',
+  rel: 'cc-relaciones-de-recurrencia',
+  tm: 'cc-teorema-maestro',
+  dyc: 'da-division-y-conquista',
+  heap: 'tda-monticulos',
+  greedy: 'da-algoritmos-avidos',
+  grfund: 'gr-fundamentos',
+  recorr: 'gr-recorridos',
+  cam: 'gr-caminos-minimos',
+  mst: 'gr-arboles-abarcadores',
+  col: 'gr-coloreo',
+  np: 'cc-conceptos-avanzados',
+  fb: 'da-fuerza-bruta',
+  bt: 'da-backtracking',
+  bb: 'da-ramificacion-y-poda',
+  pd1: 'da-programacion-dinamica-1',
+  pd2: 'da-programacion-dinamica-2',
+};

@@ -1,0 +1,26 @@
+{
+  "id": "ejemplo-sistema-solar",
+  "nombre": "Ejemplo: Sistema Solar",
+  "descripcion": "Materia de muestra con cuatro preguntas sobre los planetas del Sistema Solar.",
+  "ejemplo": true,
+  "areas": [
+    { "id": "rocosos", "nombre": "Planetas rocosos", "color": "#FFD84D", "colorSuave": "#FFE993" },
+    { "id": "gaseosos", "nombre": "Planetas gaseosos", "color": "#6CC4F2", "colorSuave": "#AEDDF8" }
+  ],
+  "temas": [
+    {
+      "id": "planetas-rocosos",
+      "nombre": "Planetas rocosos",
+      "etiquetaCorta": "Rocosos",
+      "area": "rocosos",
+      "archivo": "planetas-rocosos.md"
+    },
+    {
+      "id": "planetas-gaseosos",
+      "nombre": "Planetas gaseosos",
+      "etiquetaCorta": "Gaseosos",
+      "area": "gaseosos",
+      "archivo": "planetas-gaseosos.md"
+    }
+  ]
+}

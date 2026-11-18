@@ -1,0 +1,159 @@
+{
+  "id": "programacion-avanzada",
+  "nombre": "Programación Avanzada",
+  "descripcion": "Complejidad, diseño de algoritmos, grafos y estructuras de datos: preguntas teóricas y de reflexión de la cátedra de la UNLaM.",
+  "areas": [
+    {
+      "id": "CC",
+      "nombre": "Complejidad",
+      "color": "#FFD84D",
+      "colorSuave": "#FFE993"
+    },
+    {
+      "id": "DA",
+      "nombre": "Diseño de algoritmos",
+      "color": "#6FD99A",
+      "colorSuave": "#B0EEC8"
+    },
+    {
+      "id": "GR",
+      "nombre": "Grafos",
+      "color": "#6CC4F2",
+      "colorSuave": "#AEDDF8"
+    },
+    {
+      "id": "TDA",
+      "nombre": "Estructuras",
+      "color": "#FF8FBF",
+      "colorSuave": "#FFC2DB"
+    }
+  ],
+  "temas": [
+    {
+      "id": "cc-fundamentos",
+      "nombre": "CC: Fundamentos",
+      "etiquetaCorta": "CC Fundamentos",
+      "area": "CC",
+      "archivo": "cc-fundamentos.md"
+    },
+    {
+      "id": "da-recursividad",
+      "nombre": "DA: Recursividad",
+      "etiquetaCorta": "Recursividad",
+      "area": "DA",
+      "archivo": "da-recursividad.md"
+    },
+    {
+      "id": "cc-relaciones-de-recurrencia",
+      "nombre": "CC: Relaciones de Recurrencia",
+      "etiquetaCorta": "Recurrencias",
+      "area": "CC",
+      "archivo": "cc-relaciones-de-recurrencia.md"
+    },
+    {
+      "id": "cc-teorema-maestro",
+      "nombre": "CC: Teorema Maestro",
+      "etiquetaCorta": "Teorema Maestro",
+      "area": "CC",
+      "archivo": "cc-teorema-maestro.md"
+    },
+    {
+      "id": "da-division-y-conquista",
+      "nombre": "DA: División y Conquista",
+      "etiquetaCorta": "División y Conquista",
+      "area": "DA",
+      "archivo": "da-division-y-conquista.md"
+    },
+    {
+      "id": "tda-monticulos",
+      "nombre": "TDA: Montículos - Cola de Prioridad",
+      "etiquetaCorta": "Montículos",
+      "area": "TDA",
+      "archivo": "tda-monticulos.md"
+    },
+    {
+      "id": "da-algoritmos-avidos",
+      "nombre": "DA: Algoritmos Ávidos",
+      "etiquetaCorta": "Ávidos",
+      "area": "DA",
+      "archivo": "da-algoritmos-avidos.md"
+    },
+    {
+      "id": "gr-fundamentos",
+      "nombre": "GR: Fundamentos",
+      "etiquetaCorta": "GR Fundamentos",
+      "area": "GR",
+      "archivo": "gr-fundamentos.md"
+    },
+    {
+      "id": "gr-recorridos",
+      "nombre": "GR: Recorridos",
+      "etiquetaCorta": "Recorridos",
+      "area": "GR",
+      "archivo": "gr-recorridos.md"
+    },
+    {
+      "id": "gr-caminos-minimos",
+      "nombre": "GR: Caminos Mínimos",
+      "etiquetaCorta": "Caminos Mínimos",
+      "area": "GR",
+      "archivo": "gr-caminos-minimos.md"
+    },
+    {
+      "id": "gr-arboles-abarcadores",
+      "nombre": "GR: Árboles Abarcadores",
+      "etiquetaCorta": "Árboles Abarcadores",
+      "area": "GR",
+      "archivo": "gr-arboles-abarcadores.md"
+    },
+    {
+      "id": "gr-coloreo",
+      "nombre": "GR: Coloreo",
+      "etiquetaCorta": "Coloreo",
+      "area": "GR",
+      "archivo": "gr-coloreo.md"
+    },
+    {
+      "id": "cc-conceptos-avanzados",
+      "nombre": "CC: Conceptos Avanzados",
+      "etiquetaCorta": "Conceptos Avanzados",
+      "area": "CC",
+      "archivo": "cc-conceptos-avanzados.md"
+    },
+    {
+      "id": "da-fuerza-bruta",
+      "nombre": "DA: Fuerza Bruta",
+      "etiquetaCorta": "Fuerza Bruta",
+      "area": "DA",
+      "archivo": "da-fuerza-bruta.md"
+    },
+    {
+      "id": "da-backtracking",
+      "nombre": "DA: Backtracking",
+      "etiquetaCorta": "Backtracking",
+      "area": "DA",
+      "archivo": "da-backtracking.md"
+    },
+    {
+      "id": "da-ramificacion-y-poda",
+      "nombre": "DA: Ramificación y Poda",
+      "etiquetaCorta": "Ramificación y Poda",
+      "area": "DA",
+      "archivo": "da-ramificacion-y-poda.md"
+    },
+    {
+      "id": "da-programacion-dinamica-1",
+      "nombre": "DA: Programación Dinámica 1",
+      "etiquetaCorta": "Prog. Dinámica 1",
+      "area": "DA",
+      "archivo": "da-programacion-dinamica-1.md"
+    },
+    {
+      "id": "da-programacion-dinamica-2",
+      "nombre": "DA: Programación Dinámica 2",
+      "etiquetaCorta": "Prog. Dinámica 2",
+      "area": "DA",
+      "archivo": "da-programacion-dinamica-2.md"
+    }
+  ]
+}

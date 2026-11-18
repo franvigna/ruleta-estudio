@@ -16,5 +16,12 @@
     "noUncheckedIndexedAccess": true,
     "types": ["node"]
   },
-  "include": ["vite.config.ts", "playwright.config.ts", "scripts", "tests/e2e"]
+  "include": [
+    "vite.config.ts",
+    "playwright.config.ts",
+    "scripts",
+    "tests/e2e",
+    "tests/content",
+    "src/content/schema.ts"
+  ]
 }
