@@ -1,71 +1,28 @@
-.dos {
-  display: grid;
-  grid-template-columns: minmax(260px, 340px) 1fr;
-  gap: 28px;
-  align-items: start;
-}
-
 .panel {
+  width: 100%;
+  padding: 22px;
   background: var(--blanco);
   border: 2px solid var(--tinta);
   border-radius: 16px;
-  padding: 18px 20px;
+  box-shadow: var(--sombra-ficha);
 }
 
-.panel h3 {
-  font: 700 19px var(--display);
-  margin: 0 0 10px;
-}
-
-.leyenda {
+.pie {
   display: flex;
-  gap: 16px;
+  align-items: center;
   flex-wrap: wrap;
-  font-size: 13px;
-  color: var(--tinta-2);
-  margin: 4px 0 10px;
-}
-
-.leyenda i {
-  display: inline-block;
-  width: 11px;
-  height: 11px;
-  border-radius: 3px;
-  margin-right: 6px;
-  vertical-align: -1px;
-}
-
-.leySi {
-  background: #9fb2cc;
-}
-
-.leyNo {
-  background: var(--barra-no);
-}
-
-.leySin {
-  background: var(--superficie-suave);
-  border: 1px solid var(--borde-suave);
+  gap: 14px;
+  margin-top: 24px;
 }
 
 .aviso {
   color: var(--repaso-texto);
   font-size: 14px;
-  margin-top: 8px;
 }
 
-.dificiles {
-  margin-top: 28px;
-}
-
-.explicacion {
-  margin: -4px 0 14px;
-  color: var(--tinta-2);
-  font-size: 14px;
-}
-
-@media (max-width: 860px) {
-  .dos {
-    grid-template-columns: 1fr;
+@media (max-width: 600px) {
+  .panel {
+    padding: 16px 12px;
+    border-radius: 14px;
   }
 }

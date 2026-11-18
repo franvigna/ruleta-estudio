@@ -71,7 +71,7 @@ Solo un paso menos: O(2ⁿ⁻¹) = O(2ⁿ)/2. La complejidad no cambia de orden.
 
 Cuando el costo de una solución incorrecta es inaceptable y el espacio es tratable.
 
-## ¿Qué tienen en común todos los ejemplos vistos hoy?
+## ¿Qué tienen en común la búsqueda secuencial, los divisores, SAT y el ordenamiento por permutaciones como algoritmos de fuerza bruta?
 <!-- id: r2c47cda63c | tipo: reflexion -->
 
 Todos generan candidatos sistemáticamente y los evalúan uno a uno sin atajos.

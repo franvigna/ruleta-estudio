@@ -44,12 +44,14 @@ export function Acciones({
       {marcarVisible ? (
         <div className={estilos.marcar}>
           <span className={estilos.q}>¿Te la sabías?</span>
-          <Boton tono="si" aria-pressed={marca === 'si'} onClick={() => alMarcar('si')}>
-            Me la sabía
-          </Boton>
-          <Boton tono="no" aria-pressed={marca === 'no'} onClick={() => alMarcar('no')}>
-            No me la sabía
-          </Boton>
+          <div className={estilos.botones}>
+            <Boton tono="si" aria-pressed={marca === 'si'} onClick={() => alMarcar('si')}>
+              Me la sabía
+            </Boton>
+            <Boton tono="no" aria-pressed={marca === 'no'} onClick={() => alMarcar('no')}>
+              No me la sabía
+            </Boton>
+          </div>
           <span className={estilos.estado}>{textoEstado(marca)}</span>
         </div>
       ) : null}

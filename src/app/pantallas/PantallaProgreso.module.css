@@ -1,7 +1,7 @@
 .progreso {
   max-width: var(--ancho-max);
   margin: 0 auto;
-  padding: 28px 20px 64px;
+  padding: 82px 20px 64px;
 }
 
 .progreso h1 {
@@ -19,9 +19,9 @@
   font-size: 16px;
 }
 
-.volver {
-  display: inline-block;
-  margin-top: 24px;
-  font: 700 15px var(--display);
-  color: var(--tinta);
+@media (max-width: 480px) {
+  .progreso {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
 }

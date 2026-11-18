@@ -68,7 +68,7 @@ export function activarSonido(): void {
 export function sonidoTac(): void {
   ejecutar((ctx) => {
     const t = ctx.currentTime;
-    nota(ctx, 820, t, 0.035, 0.045, 'square', 430);
+    nota(ctx, 820, t, 0.035, 0.025, 'square', 430);
   });
 }
 

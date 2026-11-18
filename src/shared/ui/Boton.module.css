@@ -23,11 +23,11 @@
 }
 
 .si:hover {
-  background: #58ce87;
+  background: var(--boton-si-hover);
 }
 
 .no:hover {
-  background: #ff7883;
+  background: var(--boton-no-hover);
 }
 
 .si[aria-pressed='true'],

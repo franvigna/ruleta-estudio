@@ -12,6 +12,7 @@ import { DependenciasProvider } from '../providers/DependenciasProvider';
 import { ProgresoProvider } from '../providers/ProgresoProvider';
 import { RutasApp } from '../routes';
 import { crearAnimadorFalso, type AnimadorFalso } from './animador-falso';
+import { CabeceraApp } from '../CabeceraApp';
 
 /** Materia fixture: dos temas con dos preguntas cada uno. */
 export const MATERIA_DEMO = {
@@ -129,6 +130,7 @@ export function renderizarApp(op: OpcionesRenderizado = {}): AppRenderizada {
       <DependenciasProvider deps={deps}>
         <ProgresoProvider repositorio={repositorio} persistente={op.persistente ?? true}>
           <MemoryRouter initialEntries={[op.ruta ?? '/materia/demo']}>
+            <CabeceraApp />
             <RutasApp />
           </MemoryRouter>
         </ProgresoProvider>

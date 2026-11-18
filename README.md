@@ -21,9 +21,11 @@ Autor: Fran Vigna
 - Mazo por tema sin repeticiones inmediatas y acción “Otra de este tema”.
 - Estadísticas generales, barras por tema y ranking de temas a reforzar.
 - Historial de las preguntas que más costaron, ordenado por cantidad de fallos.
+- Catálogo desplegable de preguntas y respuestas por tema, con filtro de refuerzo.
 - Persistencia local por materia y migración automática del progreso de la versión legacy.
 - Atajos de teclado y modo de animación reducida.
 - Efectos visuales y sonidos sintetizados para giro, selección y autoevaluación.
+- Diseño adaptable a celular, tablet y escritorio, con selector de tema claro u oscuro.
 - Fallback en memoria cuando `localStorage` no está disponible.
 
 ## Requisitos y ejecución

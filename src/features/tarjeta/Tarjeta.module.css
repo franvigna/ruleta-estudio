@@ -12,11 +12,11 @@
 }
 
 .sabida {
-  --fondo-tarjeta: #e2f8e9;
+  --fondo-tarjeta: var(--tarjeta-si);
 }
 
 .noSabida {
-  --fondo-tarjeta: #ffe1e3;
+  --fondo-tarjeta: var(--tarjeta-no);
 }
 
 .dada {
@@ -152,5 +152,27 @@
 @media (prefers-reduced-motion: reduce) {
   .tarjeta {
     transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .cara {
+    min-height: 310px;
+  }
+
+  .cabeza {
+    padding: 14px 16px 0;
+  }
+
+  .cuerpo {
+    padding: 16px 16px 8px;
+  }
+
+  .pie {
+    padding: 10px 16px 14px;
+  }
+
+  .pregunta {
+    font-size: 20px;
   }
 }

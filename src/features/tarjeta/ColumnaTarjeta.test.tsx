@@ -16,6 +16,7 @@ function montar(parcial: Partial<ColumnaTarjetaProps> = {}) {
   const props: ColumnaTarjetaProps = {
     contenido: { tipo: 'vacio' },
     ocupado: false,
+    alCerrar: vi.fn(),
     alVoltear: vi.fn(),
     alMarcar: vi.fn(),
     alOtra: vi.fn(),
@@ -66,6 +67,12 @@ describe('ColumnaTarjeta', () => {
     expect(screen.getByText('Para repasar')).toBeInTheDocument();
     expect(screen.getByText('Respuesta HTML')).toBeInTheDocument();
     expect(screen.getByText('Queda para repasar.')).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Pregunta de Grafos' })).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Cerrar tarjeta y volver a la ruleta' }),
+    );
+    expect(props.alCerrar).toHaveBeenCalledTimes(1);
 
     await userEvent.click(screen.getByRole('button', { name: /Tarjeta/ }));
     expect(props.alVoltear).toHaveBeenCalledTimes(1);

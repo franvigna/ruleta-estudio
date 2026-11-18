@@ -22,7 +22,7 @@ ESLint hace cumplir estas fronteras. No se desactivan reglas para eludirlas.
 
 ## Interfaz y extensiones
 
-- El tema visual es claro únicamente.
+- El tema visual claro y el oscuro comparten los tokens de `src/styles/tokens.css`.
 - Los colores de área llegan desde `materia.json`; no se hardcodean colores de una materia en React.
 - Toda funcionalidad nueva entra como una feature cohesionada o como una estrategia del dominio.
 - Un modo de estudio nuevo implementa `EstrategiaSeleccion`.

@@ -1,5 +1,5 @@
 /*
- * Variables de diseño globales. Tema claro unicamente.
+ * Variables de diseño globales para los temas claro y oscuro.
  * Los colores de las areas de cada materia NO viven aca: llegan desde
  * materia.json como --area-<id> y --area-<id>-2 (ver shared/ui/areas.ts).
  */
@@ -20,13 +20,21 @@
   --linea-ficha: #dce6f3;
   --linea-fila: #e3eaf3;
   --vacio-borde: #afc0da;
+  --superficie-translucida: rgba(255, 255, 255, 0.7);
+  --contenedor-tarjeta: #cbdff1;
+  --sombra-contenedor: rgba(23, 36, 71, 0.28);
 
   /* Estados de marca */
   --marca-si: #6fd99a;
   --marca-no: #ff8f98;
+  --barra-si: #4cc38a;
   --barra-no: #f2707a;
   --repaso-fondo: #ffe1e3;
   --repaso-texto: #8a1c27;
+  --tarjeta-si: #e2f8e9;
+  --tarjeta-no: #ffe1e3;
+  --boton-si-hover: #58ce87;
+  --boton-no-hover: #ff7883;
 
   /* Foco y tipografia */
   --foco: #2b6fe0;
@@ -41,4 +49,37 @@
   /* Layout */
   --ancho-max: 1180px;
   --corte-movil: 860px;
+}
+
+:root[data-tema='oscuro'] {
+  color-scheme: dark;
+
+  --papel: #101626;
+  --cuadricula: #1c2940;
+  --tinta: #eef4ff;
+  --tinta-2: #bac6dc;
+  --blanco: #182238;
+
+  --superficie-suave: #222f48;
+  --borde-suave: #3d4d69;
+  --borde-tabla: #4a5c78;
+  --linea-ficha: #2c3a55;
+  --linea-fila: #2b3952;
+  --vacio-borde: #60718c;
+  --superficie-translucida: rgba(24, 34, 56, 0.82);
+  --contenedor-tarjeta: #2b3f61;
+  --sombra-contenedor: rgba(0, 0, 0, 0.48);
+
+  --marca-si: #55c985;
+  --marca-no: #ec707b;
+  --barra-si: #3fae7a;
+  --barra-no: #df6570;
+  --repaso-fondo: #44252d;
+  --repaso-texto: #ffbcc2;
+  --tarjeta-si: #183d31;
+  --tarjeta-no: #48272f;
+  --boton-si-hover: #68d797;
+  --boton-no-hover: #fa8490;
+
+  --foco: #8cb8ff;
 }

@@ -1,7 +1,7 @@
 .catalogo {
   width: min(var(--ancho-max), calc(100% - 40px));
   margin: 0 auto;
-  padding: 64px 0 80px;
+  padding: 82px 0 80px;
 }
 
 .cabeza {
@@ -54,7 +54,7 @@
 @media (max-width: 600px) {
   .catalogo {
     width: min(100% - 24px, var(--ancho-max));
-    padding: 36px 0 56px;
+    padding: 76px 0 56px;
   }
 
   .cabeza {

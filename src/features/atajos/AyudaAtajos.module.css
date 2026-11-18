@@ -1,9 +1,54 @@
-.teclas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 14px;
-  justify-content: center;
-  margin-top: 16px;
+.abrir {
+  position: fixed;
+  z-index: 20;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.fondo {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  display: grid;
+  padding: 16px;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.modal {
+  width: min(100%, 420px);
+  padding: 24px;
+  color: var(--tinta);
+  background: var(--blanco);
+  border: 3px solid var(--tinta);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px var(--sombra-contenedor);
+}
+
+.modal h2 {
+  margin: 0 0 14px;
+  font: 800 22px var(--display);
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
   color: var(--tinta-2);
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.cortina {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: default;
+}
+
+.modal {
+  position: relative;
 }

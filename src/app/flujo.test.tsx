@@ -4,6 +4,39 @@ import { crearMemoryRepo } from '../infra/memory-repo';
 import { renderizarApp } from './testing/renderizar-app';
 
 describe('flujo integrado de estudio', () => {
+  it('superpone la tarjeta y permite volver a la ruleta al cerrar o girar de nuevo', async () => {
+    const { user, animador } = renderizarApp({ ruta: '/materia/demo' });
+
+    expect(await screen.findByRole('link', { name: 'Volver a las materias' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Progreso' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Activar tema oscuro' })).toBeInTheDocument();
+
+    await user.click(await screen.findByRole('button', { name: 'Girar la ruleta' }));
+    animador.avanzar(6000);
+
+    expect(await screen.findByRole('dialog', { name: 'Pregunta de Tema Uno' })).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Ruleta' })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Cerrar tarjeta y volver a la ruleta' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Ruleta' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ver pregunta' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Ver pregunta' }));
+    expect(await screen.findByRole('dialog', { name: 'Pregunta de Tema Uno' })).toBeInTheDocument();
+    expect(screen.getByText('Pregunta a1')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Cerrar tarjeta y volver a la ruleta' }));
+
+    await user.click(screen.getByRole('button', { name: 'Girar la ruleta' }));
+    animador.avanzar(6000);
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Volver a girar la ruleta' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Ruleta' })).toBeInTheDocument();
+  });
+
   it('entra desde el catalogo, gira, voltea y permite corregir la marca', async () => {
     const { user, animador, repositorio } = renderizarApp({ ruta: '/' });
 

@@ -1,44 +1,130 @@
 .app {
+  width: 100%;
   max-width: var(--ancho-max);
-  margin: 0 auto;
-  padding: 28px 20px 48px;
-  display: grid;
-  grid-template-columns: minmax(320px, 460px) 1fr;
-  gap: 40px;
-  align-items: center;
   min-height: 100vh;
   min-height: 100dvh;
+  margin: 0 auto;
+  padding: 82px 24px 48px;
 }
 
-.izq h1 {
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: clamp(28px, 4vw, 40px);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin: 0 0 6px;
+.escenario {
+  display: grid;
+  width: min(100%, 860px);
+  margin: 0 auto;
+  isolation: isolate;
 }
 
-.sub {
+.ruletaVista,
+.capaTarjeta {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.ruletaVista {
+  z-index: 1;
+  width: min(100%, 700px);
+  margin: auto;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s;
+}
+
+.ruletaOculta {
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+}
+
+.capaTarjeta {
+  z-index: 2;
+  align-self: center;
+  padding: 28px;
+  background: var(--contenedor-tarjeta);
+  border: 3px solid var(--tinta);
+  border-radius: 26px;
+  box-shadow:
+    inset 0 0 0 2px var(--blanco),
+    0 16px 40px var(--sombra-contenedor);
+  animation: tarjetaEntra 0.36s cubic-bezier(0.2, 0.85, 0.25, 1.08) both;
+}
+
+.ruletaVista h1 {
   margin: 0 0 20px;
-  color: var(--tinta-2);
-  font-size: 16px;
+  font: 800 clamp(28px, 4vw, 40px) / 1.05 var(--display);
+  letter-spacing: -0.02em;
 }
 
-.ir {
+.todoSabido {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  color: var(--repaso-texto);
+  background: var(--repaso-fondo);
+  border: 2px solid var(--tinta);
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.verPregunta {
   display: block;
-  text-align: center;
-  margin-top: 12px;
-  font: 700 15px var(--display);
-  color: var(--tinta);
+  min-width: 180px;
+  margin: 22px auto 0;
+  background: var(--marca-si);
 }
 
-@media (max-width: 860px) {
+@keyframes tarjetaEntra {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Tablet: la tarjeta conserva aire, pero aprovecha casi todo el ancho. */
+@media (max-width: 900px) {
   .app {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    padding-top: 20px;
-    min-height: 0;
-    align-items: start;
+    padding: 76px 18px 44px;
+  }
+
+  .escenario {
+    width: min(100%, 700px);
+  }
+
+  .capaTarjeta {
+    padding: 20px;
+  }
+}
+
+/* Movil: una sola superficie de borde a borde para priorizar el contenido. */
+@media (max-width: 600px) {
+  .app {
+    padding: 72px 12px 36px;
+  }
+
+  .escenario,
+  .ruletaVista {
+    width: 100%;
+  }
+
+  .capaTarjeta {
+    align-self: start;
+    padding: 14px;
+    border-radius: 20px;
+    box-shadow: 0 10px 26px var(--sombra-contenedor);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruletaVista {
+    transition: none;
+  }
+
+  .capaTarjeta {
+    animation: none;
   }
 }

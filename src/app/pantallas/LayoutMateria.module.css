@@ -6,13 +6,13 @@
 .materia > p[role='status'] {
   max-width: var(--ancho-max);
   margin: 0 auto;
-  padding: 12px 20px 0;
+  padding: 76px 20px 0;
 }
 
 .mensaje {
   max-width: var(--ancho-max);
   margin: 0 auto;
-  padding: 28px 20px 48px;
+  padding: 82px 20px 48px;
 }
 
 .mensaje h1 {

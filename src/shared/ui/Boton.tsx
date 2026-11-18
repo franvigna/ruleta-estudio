@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import estilos from './Boton.module.css';
 
 export interface BotonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -8,13 +8,10 @@ export interface BotonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   armado?: boolean;
 }
 
-export function Boton({
-  tono = 'neutro',
-  armado = false,
-  className,
-  type = 'button',
-  ...resto
-}: BotonProps) {
+export const Boton = forwardRef<HTMLButtonElement, BotonProps>(function Boton(
+  { tono = 'neutro', armado = false, className, type = 'button', ...resto },
+  ref,
+) {
   const clases = [
     estilos.boton,
     tono === 'si' ? estilos.si : '',
@@ -24,5 +21,5 @@ export function Boton({
   ]
     .filter(Boolean)
     .join(' ');
-  return <button type={type} className={clases} {...resto} />;
-}
+  return <button ref={ref} type={type} className={clases} {...resto} />;
+});

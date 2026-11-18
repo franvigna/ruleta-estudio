@@ -1,15 +1,8 @@
-import { Link } from 'react-router-dom';
-import {
-  estadisticasPorTema,
-  preguntasMasDificiles,
-  resumenMateria,
-  temasAReforzar,
-} from '../../domain/estadisticas';
+import { estadisticasPorTema, resumenMateria } from '../../domain/estadisticas';
 import { progresoVacio } from '../../domain/progreso';
 import { PanelProgreso } from '../../features/progreso';
 import { useProgreso } from '../providers/ProgresoProvider';
 import { useSesion } from '../providers/SesionProvider';
-import { hrefMateria } from '../router';
 import estilos from './PantallaProgreso.module.css';
 
 export function PantallaProgreso() {
@@ -27,14 +20,10 @@ export function PantallaProgreso() {
       </p>
       <PanelProgreso
         resumen={resumenMateria(materia, p)}
-        reforzar={temasAReforzar(materia, p)}
         porTema={estadisticasPorTema(materia, p)}
-        preguntasDificiles={preguntasMasDificiles(materia, p)}
+        progreso={p}
         alReiniciar={sesion.reiniciar}
       />
-      <Link className={estilos.volver} to={hrefMateria(materia.id)}>
-        Volver a la ruleta
-      </Link>
     </main>
   );
 }

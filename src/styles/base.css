@@ -11,6 +11,7 @@
 
 html {
   scroll-padding-top: env(safe-area-inset-top, 0px);
+  min-width: 280px;
 }
 
 body {
@@ -27,6 +28,21 @@ body {
     linear-gradient(var(--cuadricula) 1px, transparent 1px),
     linear-gradient(90deg, var(--cuadricula) 1px, transparent 1px);
   background-size: 24px 24px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
 }
 
 :focus-visible {
@@ -42,4 +58,10 @@ body {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
 }

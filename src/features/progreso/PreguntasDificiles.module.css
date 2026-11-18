@@ -44,3 +44,11 @@
   margin: 0;
   color: var(--tinta-2);
 }
+
+@media (max-width: 480px) {
+  .lista li {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 11px;
+  }
+}

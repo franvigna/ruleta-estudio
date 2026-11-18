@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { progresoVacio } from '../../domain/progreso';
 import { estadoPantalla } from '../../domain/sesion';
 import { AyudaAtajos, useAtajosTeclado } from '../../features/atajos';
@@ -7,32 +6,41 @@ import { Leyenda, Ruleta } from '../../features/ruleta';
 import { ColumnaTarjeta, type ContenidoColumna } from '../../features/tarjeta';
 import {
   activarSonido,
+  Boton,
   sonidoSeleccion,
   sonidoTac,
   sonidoTrompetaTriste,
   sonidoVictoria,
-  useEsMovil,
 } from '../../shared/ui';
 import { useDependencias } from '../providers/DependenciasProvider';
 import { useProgreso } from '../providers/ProgresoProvider';
 import { useSesion } from '../providers/SesionProvider';
-import { HREF_CATALOGO, hrefProgreso } from '../router';
 import estilos from './PantallaRuleta.module.css';
 
 export function PantallaRuleta() {
   const { materia, estado, girar, terminarGiro, otra, voltear, marcar } = useSesion();
-  const { animador, estrategia, reducido } = useDependencias();
+  const { animador, estrategia } = useDependencias();
   const { progreso } = useProgreso(materia.id);
-  const esMovil = useEsMovil();
   const refColumna = useRef<HTMLElement>(null);
+  const refRuleta = useRef<HTMLElement>(null);
+  const [tarjetaVisible, setTarjetaVisible] = useState(false);
+
+  const enfocarRuleta = () => {
+    requestAnimationFrame(() => {
+      refRuleta.current?.querySelector<HTMLElement>('[role="button"]')?.focus();
+    });
+  };
 
   const girarConSonido = () => {
+    setTarjetaVisible(false);
     activarSonido();
     girar();
+    enfocarRuleta();
   };
   const terminarConSonido = () => {
     sonidoSeleccion();
     terminarGiro();
+    setTarjetaVisible(true);
   };
   const marcarConSonido = (marca: 'si' | 'no') => {
     if (marca === 'si') sonidoVictoria();
@@ -44,19 +52,28 @@ export function PantallaRuleta() {
 
   const contenido = estado.contenido;
   const preguntaId = contenido.tipo === 'tarjeta' ? contenido.preguntaId : null;
+  const mostrarTarjeta = tarjetaVisible && contenido.tipo === 'tarjeta' && !estado.giro;
+  const puedeReabrir = contenido.tipo === 'tarjeta' && !mostrarTarjeta && !estado.giro;
 
-  // En movil, al salir una pregunta nueva se baja a la tarjeta (no al montar la pantalla).
-  const ultimaPregunta = useRef(preguntaId);
   useEffect(() => {
-    if (preguntaId === ultimaPregunta.current) return;
-    ultimaPregunta.current = preguntaId;
-    if (esMovil && preguntaId) {
-      refColumna.current?.scrollIntoView?.({
-        behavior: reducido ? 'auto' : 'smooth',
-        block: 'start',
-      });
-    }
-  }, [preguntaId, esMovil, reducido]);
+    if (mostrarTarjeta) refColumna.current?.focus();
+  }, [mostrarTarjeta]);
+
+  useEffect(() => {
+    const ruleta = refRuleta.current;
+    if (!ruleta) return;
+    if (mostrarTarjeta) ruleta.setAttribute('inert', '');
+    else ruleta.removeAttribute('inert');
+  }, [mostrarTarjeta]);
+
+  const cerrarTarjeta = () => {
+    setTarjetaVisible(false);
+    enfocarRuleta();
+  };
+
+  const reabrirTarjeta = () => {
+    setTarjetaVisible(true);
+  };
 
   const disponibles = useMemo(
     () =>
@@ -96,41 +113,52 @@ export function PantallaRuleta() {
 
   return (
     <main className={estilos.app}>
-      <section className={estilos.izq} aria-label="Ruleta">
-        <h1>Ruleta de {materia.nombre}</h1>
-        <p className={estilos.sub}>
-          La ruleta gira, sortea un tema y te toca una pregunta al azar de ese tema.
-        </p>
-        <Ruleta
-          temas={materia.temas}
-          disponibles={disponibles}
-          rot={estado.rot}
-          giro={estado.giro}
-          ganador={estado.ganador}
-          animador={animador}
-          alGirar={girarConSonido}
-          alTic={sonidoTac}
-          alTerminar={terminarConSonido}
-          etiquetaAria={`Ruleta con los ${materia.temas.length} temas de la materia`}
-        />
-        <AyudaAtajos />
-        <Leyenda areas={materia.areas} />
-        <Link className={estilos.ir} to={hrefProgreso(materia.id)}>
-          Ver tu progreso
-        </Link>
-        <Link className={estilos.ir} to={HREF_CATALOGO}>
-          Volver a las materias
-        </Link>
-      </section>
-      <ColumnaTarjeta
-        ref={refColumna}
-        contenido={columna}
-        ocupado={estadoPantalla(estado) === 'girando'}
-        alVoltear={voltear}
-        alMarcar={marcarConSonido}
-        alOtra={otra}
-        alGirarDeNuevo={girarConSonido}
-      />
+      <AyudaAtajos />
+      <div className={estilos.escenario}>
+        <section
+          ref={refRuleta}
+          className={`${estilos.ruletaVista} ${mostrarTarjeta ? estilos.ruletaOculta : ''}`}
+          aria-label="Ruleta"
+          aria-hidden={mostrarTarjeta || undefined}
+        >
+          <h1>Ruleta de {materia.nombre}</h1>
+          <Ruleta
+            temas={materia.temas}
+            disponibles={disponibles}
+            rot={estado.rot}
+            giro={estado.giro}
+            ganador={estado.ganador}
+            animador={animador}
+            alGirar={girarConSonido}
+            alTic={sonidoTac}
+            alTerminar={terminarConSonido}
+            etiquetaAria={`Ruleta con los ${materia.temas.length} temas de la materia`}
+          />
+          <Leyenda areas={materia.areas} />
+          {contenido.tipo === 'todo-sabido' ? (
+            <p className={estilos.todoSabido}>Te sabés todas las preguntas de esta materia.</p>
+          ) : null}
+          {puedeReabrir ? (
+            <Boton className={estilos.verPregunta} onClick={reabrirTarjeta}>
+              Ver pregunta
+            </Boton>
+          ) : null}
+        </section>
+        {mostrarTarjeta ? (
+          <div className={estilos.capaTarjeta}>
+            <ColumnaTarjeta
+              ref={refColumna}
+              contenido={columna}
+              ocupado={estadoPantalla(estado) === 'girando'}
+              alCerrar={cerrarTarjeta}
+              alVoltear={voltear}
+              alMarcar={marcarConSonido}
+              alOtra={otra}
+              alGirarDeNuevo={girarConSonido}
+            />
+          </div>
+        ) : null}
+      </div>
     </main>
   );
 }

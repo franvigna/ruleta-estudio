@@ -1,6 +1,6 @@
 .lista {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 24px;
   list-style: none;
   margin: 0;
@@ -12,6 +12,6 @@
   border-radius: 18px;
   padding: 36px 28px;
   color: var(--tinta-2);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--superficie-translucida);
   font-size: 18px;
 }
