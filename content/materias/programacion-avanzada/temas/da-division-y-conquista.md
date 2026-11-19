@@ -127,26 +127,26 @@ Cualquier algoritmo que ordene solo comparando pares necesita al menos log(n!) c
 Encuentra el k-ésimo elemento más pequeño sin ordenar todo el arreglo, usando la partición de QuickSort. La diferencia es que después de partir sigue solo por el lado donde está la posición k, no por los dos. En el caso promedio T(n) = T(n/2) + n → caso 1 → O(n); en el peor, T(n) = T(n - 1) + n → O(n²). La solución naive de ordenar todo y tomar la posición k cuesta O(n log n).
 
 ## ¿Cuáles son los tres pasos de División y Conquista y qué hace cada uno en MergeSort específicamente?
-<!-- id: r0e401abb40 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r0e401abb40 | tipo: reflexion -->
 
 Dividir: parte el arreglo a la mitad. Conquistar: ordena recursivamente cada mitad. Combinar: fusiona las dos mitades ordenadas con la fusión ordenada. El caso base es un arreglo de 0 o 1 elementos.
 
 ## ¿Por qué el árbol de recursión de MergeSort tiene costo O(n) por nivel, y cuántos niveles tiene?
-<!-- id: r7a438b2970 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r7a438b2970 | tipo: reflexion -->
 
 Porque en cada nivel los sub-arreglos, sumados, siempre tienen los n elementos, y la fusión es lineal en ellos. Tiene log₂ n + 1 niveles porque el tamaño se divide a la mitad en cada nivel.
 
 ## ¿En qué condición el caso peor de QuickSort es O(n²) y cómo se puede mitigar?
-<!-- id: r196a6792e8 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r196a6792e8 | tipo: reflexion -->
 
 Cuando el pivote cae consistentemente en un extremo, por ejemplo tomando el primer elemento de un arreglo ya ordenado: cada partición deja un lado vacío y el otro con n - 1 elementos. Se mitiga eligiendo mejor el pivote: aleatorio o mediana de tres.
 
 ## ¿Qué significa que un algoritmo de ordenamiento sea estable, y cuál de los dos algoritmos vistos cumple esa propiedad?
-<!-- id: r16b5e82fd5 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r16b5e82fd5 | tipo: reflexion -->
 
 Que ante dos elementos con la misma clave de ordenamiento se conserva su orden original. De los dos, **MergeSort** es estable: en la fusión, ante un empate toma primero el elemento de la mitad izquierda, que venía antes. QuickSort no es estable.
 
 ## ¿Por qué la recurrencia T(n) = T(n-1) + n no puede resolverse con el Teorema Maestro, y cuál es su solución por sustitución?
-<!-- id: r08f182b8ca | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r08f182b8ca | tipo: reflexion -->
 
 Porque el tamaño se reduce restando 1, no dividiendo: no tiene la forma a · T(n/b). Por sustitución: T(n) = T(1) + 2 + 3 + … + n = T(1) + n(n+1)/2 - 1 → O(n²). Es la recurrencia del peor caso de QuickSort.

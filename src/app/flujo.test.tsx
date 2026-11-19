@@ -71,6 +71,65 @@ describe('flujo integrado de estudio', () => {
     expect(screen.getByRole('button', { name: /Tarjeta/ })).toHaveAttribute('data-marca', 'si');
   });
 
+  it('cierra la tarjeta 2,5 segundos despues de marcar y vuelve a la ruleta', async () => {
+    const { user, animador, repositorio } = renderizarApp({ ruta: '/materia/demo' });
+    await user.click(await screen.findByRole('button', { name: 'Girar la ruleta' }));
+    animador.avanzar(6000);
+    await user.click(await screen.findByRole('button', { name: /Tarjeta: tocá/ }));
+
+    await user.click(screen.getByRole('button', { name: 'Me la sabía' }));
+    await waitFor(async () => {
+      expect((await repositorio.cargar('demo')).marcas).toEqual({ a1: 'si' });
+    });
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument(), {
+      timeout: 4000,
+    });
+    expect(screen.getByRole('region', { name: 'Ruleta' })).toBeInTheDocument();
+  }, 10000);
+
+  it('no cierra la tarjeta si solo se da vuelta sin marcar', async () => {
+    const { user, animador, repositorio } = renderizarApp({ ruta: '/materia/demo' });
+    await user.click(await screen.findByRole('button', { name: 'Girar la ruleta' }));
+    animador.avanzar(6000);
+    await user.click(await screen.findByRole('button', { name: /Tarjeta: tocá/ }));
+    await new Promise((r) => setTimeout(r, 2800));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect((await repositorio.cargar('demo')).marcas).toEqual({});
+  }, 10000);
+
+  it('navega entre las preguntas vistas y las descarta al girar de nuevo', async () => {
+    const { user, animador, repositorio } = renderizarApp({ ruta: '/materia/demo' });
+    await user.click(await screen.findByRole('button', { name: 'Girar la ruleta' }));
+    animador.avanzar(6000);
+    expect(await screen.findByText('Pregunta a1')).toBeInTheDocument();
+    expect(screen.getByText('1 / 1')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Pregunta anterior' })).toBeDisabled();
+
+    await user.click(screen.getByRole('button', { name: 'Siguiente pregunta del mismo tema' }));
+    expect(await screen.findByText('Pregunta a2')).toBeInTheDocument();
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Pregunta anterior' }));
+    expect(screen.getByText('Pregunta a1')).toBeInTheDocument();
+    expect(screen.getByText('1 / 2')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Siguiente pregunta del mismo tema' }));
+    expect(screen.getByText('Pregunta a2')).toBeInTheDocument();
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+
+    // Sin marcar nada no queda progreso, y cerrar la tarjeta conserva la lista.
+    expect((await repositorio.cargar('demo')).marcas).toEqual({});
+    await user.click(screen.getByRole('button', { name: 'Cerrar tarjeta y volver a la ruleta' }));
+    await user.click(screen.getByRole('button', { name: 'Ver pregunta' }));
+    expect(screen.getByText('2 / 2')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Volver a girar la ruleta' }));
+    animador.avanzar(6000);
+    expect(await screen.findByText('1 / 1')).toBeInTheDocument();
+  });
+
   it('reinicia el progreso solamente después de la segunda confirmacion', async () => {
     const repositorio = crearMemoryRepo({ demo: { marcas: { a1: 'si', b1: 'no' } } });
     const { user } = renderizarApp({ ruta: '/materia/demo/progreso', repositorio });

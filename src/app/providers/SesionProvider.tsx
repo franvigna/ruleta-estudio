@@ -10,6 +10,7 @@ import {
 import { progresoVacio } from '../../domain/progreso';
 import {
   alReiniciar,
+  anterior as anteriorSesion,
   girar as girarSesion,
   otraDelTema,
   puedeMarcar,
@@ -29,6 +30,7 @@ export interface UsoSesion {
   girar(): void;
   terminarGiro(): void;
   otra(): void;
+  anterior(): void;
   voltear(): void;
   marcar(m: Marca): void;
   reiniciar(): void;
@@ -75,6 +77,7 @@ export function SesionProvider({ materia, children }: { materia: Materia; childr
       terminarGiro: () =>
         aplicar((s) => terminarGiroSesion(s, armarCtx(s), estrategia, reducido, rng)),
       otra: () => aplicar((s) => otraDelTema(s, armarCtx(s), estrategia, reducido, rng)),
+      anterior: () => aplicar((s) => anteriorSesion(s, armarCtx(s))),
       voltear: () => aplicar((s) => voltearSesion(s)),
       marcar(m) {
         const s = ref.current;

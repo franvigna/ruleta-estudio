@@ -22,15 +22,27 @@ export type ContenidoColumna =
 export interface ColumnaTarjetaProps {
   contenido: ContenidoColumna;
   ocupado: boolean;
+  posicion: { actual: number; total: number };
   alCerrar(): void;
   alVoltear(): void;
   alMarcar(m: Marca): void;
+  alAnterior(): void;
   alOtra(): void;
   alGirarDeNuevo(): void;
 }
 
 export const ColumnaTarjeta = forwardRef<HTMLElement, ColumnaTarjetaProps>(function ColumnaTarjeta(
-  { contenido, ocupado, alCerrar, alVoltear, alMarcar, alOtra, alGirarDeNuevo },
+  {
+    contenido,
+    ocupado,
+    posicion,
+    alCerrar,
+    alVoltear,
+    alMarcar,
+    alAnterior,
+    alOtra,
+    alGirarDeNuevo,
+  },
   ref,
 ) {
   const esTarjeta = contenido.tipo === 'tarjeta';
@@ -71,7 +83,9 @@ export const ColumnaTarjeta = forwardRef<HTMLElement, ColumnaTarjetaProps>(funct
           <Acciones
             marcarVisible={contenido.marcarVisible}
             marca={contenido.marca}
+            posicion={posicion}
             alMarcar={alMarcar}
+            alAnterior={alAnterior}
             alOtra={alOtra}
             alGirarDeNuevo={alGirarDeNuevo}
           />

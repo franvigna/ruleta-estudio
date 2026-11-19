@@ -1,8 +1,9 @@
 .acciones {
   grid-row: 3;
-  align-self: start;
+  align-self: stretch;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   margin-top: 22px;
 }
@@ -31,6 +32,15 @@
 .estado {
   color: var(--tinta-2);
   font-size: 14px;
+}
+
+.posicion {
+  align-self: center;
+  min-width: 48px;
+  color: var(--tinta-2);
+  font: 700 14px var(--display);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .icono {

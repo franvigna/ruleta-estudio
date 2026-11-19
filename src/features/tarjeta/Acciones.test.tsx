@@ -7,7 +7,9 @@ function montar(parcial: Partial<AccionesProps> = {}) {
   const props: AccionesProps = {
     marcarVisible: true,
     marca: undefined,
+    posicion: { actual: 1, total: 1 },
     alMarcar: vi.fn(),
+    alAnterior: vi.fn(),
     alOtra: vi.fn(),
     alGirarDeNuevo: vi.fn(),
     ...parcial,
@@ -62,6 +64,21 @@ describe('Acciones', () => {
       'true',
     );
     expect(screen.getByText('Queda para repasar.')).toBeInTheDocument();
+  });
+
+  it('anterior esta deshabilitado en la primera pregunta y muestra la posicion', async () => {
+    const props = montar({ posicion: { actual: 1, total: 3 } });
+    expect(screen.getByText('1 / 3')).toBeInTheDocument();
+    const anterior = screen.getByRole('button', { name: 'Pregunta anterior' });
+    expect(anterior).toBeDisabled();
+    await userEvent.click(anterior);
+    expect(props.alAnterior).not.toHaveBeenCalled();
+  });
+
+  it('anterior se habilita desde la segunda pregunta', async () => {
+    const props = montar({ posicion: { actual: 2, total: 3 } });
+    await userEvent.click(screen.getByRole('button', { name: 'Pregunta anterior' }));
+    expect(props.alAnterior).toHaveBeenCalledTimes(1);
   });
 
   it('dispara los callbacks', async () => {

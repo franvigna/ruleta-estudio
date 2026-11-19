@@ -40,7 +40,7 @@ Es el desbordamiento de la pila: si no hay caso base (o nunca se alcanza), ning�
 Iteración: cuando el rendimiento o la memoria son críticos (sistemas embebidos, datos masivos), el problema es lineal (recorrer una lista, sumar números) o no se puede correr riesgo por profundidad de llamadas. Recursividad: cuando la estructura es recursiva por naturaleza (árboles, grafos, sistemas de archivos), en división y conquista (QuickSort, MergeSort), o cuando se prioriza claridad sobre micro-optimización. Regla práctica: si se resuelve con un for, iterá; si al iterar ves que necesitás una pila, usá recursividad.
 
 ## Pero… ¿cómo medimos el costo de un algoritmo recursivo?
-<!-- id: rcf14b79c33 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: rcf14b79c33 | tipo: reflexion -->
 
 Planteando una **relación de recurrencia**: una ecuación que expresa T(n) en función del costo de instancias más chicas del mismo problema, con un caso base y un caso recursivo. Después se resuelve por telescopía, con un árbol de recursión o, si tiene la forma a·T(n/b) + nᶜ, con el Teorema Maestro.
 

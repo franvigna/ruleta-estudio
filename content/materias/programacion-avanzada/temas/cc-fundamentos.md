@@ -214,26 +214,26 @@ Cuando hay dos o más llamadas internas y el problema se reduce **restando**, no
 Se estima un segundo de cómputo. La tabla muestra cuántos datos se pueden procesar en ese tiempo según la complejidad, en función de cuántas operaciones hace la computadora por segundo.
 
 ## ¿Por qué no utilizamos siempre el mejor algoritmo? Es más: si existe un algoritmo óptimo y eficiente… ¿por qué usaríamos uno peor?
-<!-- id: r4fa31ad15c | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r4fa31ad15c | tipo: reflexion -->
 
 La eficiencia no es el único criterio: además del tiempo y la memoria importan la claridad de la solución y la facilidad de codificación. Y “el mejor” depende del contexto: inserción gana con datos casi ordenados y selección cuando cada posición guarda mucha información; MergeSort garantiza O(n log n) pero necesita O(n) de memoria extra; y con entradas chicas la diferencia entre órdenes casi no importa, así que puede convenir lo más simple.
 
 ## ¿Cómo se calcula en forma teórica el tiempo que tardará la ejecución de un fragmento de código?
-<!-- id: re2518ea25d | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: re2518ea25d | tipo: reflexion -->
 
 Contando operaciones elementales en función del tamaño de la entrada, sin ejecutar nada. Las sentencias simples cuestan una constante, una secuencia suma sus costos, un condicional cuesta la condición más la rama más cara y un bucle multiplica la cantidad de iteraciones por el costo del cuerpo (reglas de la suma y del producto). Con eso se arma T(n) y se expresa su orden con notación asintótica.
 
 ## ¿Y en forma empírica?
-<!-- id: r547e25f579 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r547e25f579 | tipo: reflexion -->
 
 Implementando el algoritmo y midiendo: se eligen entradas de tamaño creciente (duplicando cada vez), se ejecuta varias veces cada una, se promedia descartando las primeras corridas, y se grafica el tiempo contra el tamaño. Cómo cambia el tiempo al duplicar n muestra la complejidad. La desventaja es que hay que codificar y los resultados dependen de la máquina.
 
 ## ¿Puede resolverse exactamente el mismo problema con distintos algoritmos?
-<!-- id: rba8cf66219 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: rba8cf66219 | tipo: reflexion -->
 
 Sí. Un mismo problema admite varios algoritmos, con distintas estrategias de diseño (fuerza bruta, división y conquista, greedy, programación dinámica, backtracking, ramificación y poda) y estructura iterativa o recursiva. Ordenar, por ejemplo, se resuelve con selección, inserción, MergeSort, QuickSort o HeapSort, con costos y propiedades distintas.
 
 ## ¿Cuáles eran las cuatro características vistas para los algoritmos de ordenamiento?
-<!-- id: r2df0374407 | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r2df0374407 | tipo: reflexion -->
 
 **Sensible a la entrada**: su tiempo varía según cómo viene la entrada. **Estable**: conserva el orden original de los elementos con igual clave. **En línea**: puede procesar los datos a medida que llegan. **En el lugar**: ordena usando solo espacio adicional constante.

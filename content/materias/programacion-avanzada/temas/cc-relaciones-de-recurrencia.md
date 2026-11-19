@@ -33,6 +33,6 @@ Porque cada llamada genera dos llamadas más, así que cada nivel del árbol dup
 Porque en cada paso el tamaño se divide por una constante (10 o 2) y el trabajo fuera de la llamada es constante. Se necesitan i pasos hasta que n/bⁱ llega al caso base, es decir, i = log_b n.
 
 ## La telescopía funciona bien para recurrencias simples, pero es tediosa para las más complejas. ¿Existirá algún atajo?
-<!-- id: r1d8b47241c | tipo: reflexion | nota: Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase. -->
+<!-- id: r1d8b47241c | tipo: reflexion -->
 
 Sí: el **Teorema Maestro**. Para recurrencias de la forma T(n) = a·T(n/b) + nᶜ alcanza con comparar logb(a) contra c para obtener el orden, sin hacer el desarrollo completo.

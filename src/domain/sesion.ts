@@ -1,3 +1,15 @@
+import {
+  actual,
+  agregar,
+  avanzar,
+  historialCon,
+  historialVacio,
+  puedeAvanzar,
+  puedeRetroceder,
+  retroceder,
+  type Historial,
+  type RefPregunta,
+} from './historial';
 import { marcaDe } from './progreso';
 import type { Rng } from './random';
 import { planificarGiro, type PlanGiro } from './ruleta-math';
@@ -24,6 +36,8 @@ export interface EstadoSesion<E> {
   readonly ganador: number | null;
   readonly contenido: Contenido;
   readonly estrategia: E;
+  /** Preguntas vistas desde el ultimo giro; se vacia al sortear un tema nuevo. */
+  readonly historial: Historial;
 }
 
 export type EstadoPantalla = 'inactivo' | 'girando' | 'mostrando';
@@ -40,6 +54,7 @@ export function sesionInicial<E>(e: EstrategiaSeleccion<E>): EstadoSesion<E> {
     ganador: null,
     contenido: { tipo: 'vacio' },
     estrategia: e.estadoInicial(),
+    historial: historialVacio,
   };
 }
 
@@ -73,21 +88,30 @@ export function mostrar<E>(
   temaId: TemaId,
   reducido: boolean,
   rng: Rng,
+  listaNueva = false,
 ): EstadoSesion<E> {
   const r = est.sacarPregunta(ctx, s.estrategia, temaId, rng);
   if (!r) return girar(s, ctx, est, reducido, rng);
+  const ref = { temaId, preguntaId: r.preguntaId };
   return {
     ...s,
     estrategia: r.estado,
-    contenido: {
-      tipo: 'tarjeta',
-      temaId,
-      preguntaId: r.preguntaId,
-      dada: false,
-      marcarVisible: false,
-      repaso: marcaDe(ctx.progreso, r.preguntaId) === 'no',
-      falloContado: false,
-    },
+    historial: listaNueva ? historialCon(ref) : agregar(s.historial, ref),
+    contenido: tarjetaDe(ctx, ref),
+  };
+}
+
+/** Tarjeta de frente. Al revisitar una pregunta ya marcada, sus botones quedan disponibles. */
+function tarjetaDe(ctx: ContextoSeleccion, ref: RefPregunta, revisita = false): Contenido {
+  const marca = marcaDe(ctx.progreso, ref.preguntaId);
+  return {
+    tipo: 'tarjeta',
+    temaId: ref.temaId,
+    preguntaId: ref.preguntaId,
+    dada: false,
+    marcarVisible: revisita && marca !== undefined,
+    repaso: marca === 'no',
+    falloContado: false,
   };
 }
 
@@ -103,10 +127,13 @@ export function terminarGiro<E>(
   const terminado: EstadoSesion<E> = { ...s, rot: desde + delta, giro: null, ganador: indice };
   const tema = ctx.materia.temas[indice];
   if (!tema) return terminado;
-  return mostrar(terminado, ctx, est, tema.id, reducido, rng);
+  return mostrar(terminado, ctx, est, tema.id, reducido, rng, true);
 }
 
-/** Si hay giro no hace nada; si no, otra pregunta del tema de la tarjeta actual. */
+/**
+ * Si hay giro no hace nada. Si el cursor esta en medio del historial avanza a la
+ * siguiente ya vista; en el final saca otra pregunta del tema y la agrega.
+ */
 export function otraDelTema<E>(
   s: EstadoSesion<E>,
   ctx: ContextoSeleccion,
@@ -115,7 +142,20 @@ export function otraDelTema<E>(
   rng: Rng,
 ): EstadoSesion<E> {
   if (s.giro || s.contenido.tipo !== 'tarjeta') return s;
+  if (puedeAvanzar(s.historial)) return irA(s, ctx, avanzar(s.historial));
   return mostrar(s, ctx, est, s.contenido.temaId, reducido, rng);
+}
+
+/** Vuelve a la pregunta anterior del historial; sin giro ni anterior no hace nada. */
+export function anterior<E>(s: EstadoSesion<E>, ctx: ContextoSeleccion): EstadoSesion<E> {
+  if (s.giro || s.contenido.tipo !== 'tarjeta' || !puedeRetroceder(s.historial)) return s;
+  return irA(s, ctx, retroceder(s.historial));
+}
+
+function irA<E>(s: EstadoSesion<E>, ctx: ContextoSeleccion, historial: Historial): EstadoSesion<E> {
+  const ref = actual(historial);
+  if (!ref) return s;
+  return { ...s, historial, contenido: tarjetaDe(ctx, ref, true) };
 }
 
 /** Alterna dada; una vez dada, marcarVisible queda en true aunque se vuelva al frente. */

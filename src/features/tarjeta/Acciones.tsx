@@ -10,6 +10,14 @@ function IconoSiguiente() {
   );
 }
 
+function IconoAnterior() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M19 12H7M11 7l-5 5 5 5" />
+    </svg>
+  );
+}
+
 function IconoGirar() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -21,7 +29,10 @@ function IconoGirar() {
 export interface AccionesProps {
   marcarVisible: boolean;
   marca: Marca | undefined;
+  /** Posicion (desde 1) dentro de las preguntas vistas desde el ultimo giro. */
+  posicion: { actual: number; total: number };
   alMarcar(m: Marca): void;
+  alAnterior(): void;
   alOtra(): void;
   alGirarDeNuevo(): void;
 }
@@ -35,7 +46,9 @@ function textoEstado(marca: Marca | undefined): string {
 export function Acciones({
   marcarVisible,
   marca,
+  posicion,
   alMarcar,
+  alAnterior,
   alOtra,
   alGirarDeNuevo,
 }: AccionesProps) {
@@ -55,6 +68,18 @@ export function Acciones({
           <span className={estilos.estado}>{textoEstado(marca)}</span>
         </div>
       ) : null}
+      <Boton
+        className={estilos.icono}
+        aria-label="Pregunta anterior"
+        title="Pregunta anterior"
+        disabled={posicion.actual <= 1}
+        onClick={alAnterior}
+      >
+        <IconoAnterior />
+      </Boton>
+      <span className={estilos.posicion} aria-label="Posicion en las preguntas vistas">
+        {posicion.actual} / {posicion.total}
+      </span>
       <Boton
         className={estilos.icono}
         aria-label="Siguiente pregunta del mismo tema"

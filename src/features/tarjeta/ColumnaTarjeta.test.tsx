@@ -16,9 +16,11 @@ function montar(parcial: Partial<ColumnaTarjetaProps> = {}) {
   const props: ColumnaTarjetaProps = {
     contenido: { tipo: 'vacio' },
     ocupado: false,
+    posicion: { actual: 1, total: 1 },
     alCerrar: vi.fn(),
     alVoltear: vi.fn(),
     alMarcar: vi.fn(),
+    alAnterior: vi.fn(),
     alOtra: vi.fn(),
     alGirarDeNuevo: vi.fn(),
     ...parcial,

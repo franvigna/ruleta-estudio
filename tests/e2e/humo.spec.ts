@@ -97,6 +97,9 @@ test('estudiar una pregunta y conservar el progreso al recargar', async ({ page 
   await page.getByRole('button', { name: 'Me la sabía', exact: true }).click();
   await expect(page.getByText('Sale de la ruleta.')).toBeVisible();
   await expect(page.getByRole('button', { name: /Tarjeta:/ })).toHaveAttribute('data-marca', 'si');
+  // Tras marcar, la tarjeta se cierra sola y reaparece la ruleta.
+  await expect(page.getByRole('dialog')).toHaveCount(0, { timeout: 5000 });
+  await expect(page.locator('section[aria-label="Ruleta"]')).toBeVisible();
 
   await page.reload();
   await expect(

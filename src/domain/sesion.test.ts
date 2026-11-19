@@ -3,6 +3,7 @@ import { rngSecuencia } from './random';
 import { segmentoBajoPuntero } from './ruleta-math';
 import {
   alReiniciar,
+  anterior,
   estadoPantalla,
   girar,
   mostrar,
@@ -143,6 +144,72 @@ describe('sesion', () => {
     expect(otraDelTema(g, ctx(), est, false, rng())).toBe(g);
     const v = ini();
     expect(otraDelTema(v, ctx(), est, false, rng())).toBe(v);
+  });
+
+  it('terminarGiro inicia el historial con la primera pregunta', () => {
+    const s = conTarjeta();
+    expect(s.historial.items).toHaveLength(1);
+    expect(s.historial).toMatchObject({ indice: 0 });
+    expect(s.historial.items[0]).toMatchObject({ temaId: 't1' });
+  });
+
+  it('otra agrega al historial y anterior/otra navegan sin sortear de nuevo', () => {
+    const s1 = conTarjeta();
+    const id1 = (s1.contenido as { preguntaId: string }).preguntaId;
+    const s2 = otraDelTema(s1, ctx(progresoVacio, id1), est, false, rngSecuencia([0]));
+    const id2 = (s2.contenido as { preguntaId: string }).preguntaId;
+    expect(id2).not.toBe(id1);
+    expect(s2.historial.items.map((r) => r.preguntaId)).toEqual([id1, id2]);
+    expect(s2.historial.indice).toBe(1);
+
+    const atras = anterior(s2, ctx());
+    expect(atras.contenido).toMatchObject({ preguntaId: id1, dada: false });
+    expect(atras.historial.indice).toBe(0);
+    expect(atras.estrategia).toBe(s2.estrategia);
+
+    const sinRng = () => {
+      throw new Error('no debe sortear');
+    };
+    const adelante = otraDelTema(atras, ctx(), est, false, sinRng);
+    expect(adelante.contenido).toMatchObject({ preguntaId: id2 });
+    expect(adelante.historial.items).toHaveLength(2);
+
+    const s3 = otraDelTema(adelante, ctx(progresoVacio, id2), est, false, rngSecuencia([0]));
+    expect(s3.historial.items).toHaveLength(3);
+  });
+
+  it('anterior no hace nada sin anterior, sin tarjeta o con giro', () => {
+    const s = conTarjeta();
+    expect(anterior(s, ctx())).toBe(s);
+    const v = ini();
+    expect(anterior(v, ctx())).toBe(v);
+    const s2 = otraDelTema(s, ctx(progresoVacio, 'a1'), est, false, rngSecuencia([0]));
+    const g = girar(s2, ctx(), est, false, rng());
+    expect(anterior(g, ctx())).toBe(g);
+  });
+
+  it('al revisitar una pregunta marcada los botones de marca quedan visibles', () => {
+    const s1 = conTarjeta();
+    const id1 = (s1.contenido as { preguntaId: string }).preguntaId;
+    const s2 = otraDelTema(s1, ctx(progresoVacio, id1), est, false, rngSecuencia([0]));
+    const p = marcar(progresoVacio, id1, 'no');
+    const atras = anterior(s2, ctx(p));
+    expect(atras.contenido).toMatchObject({
+      marcarVisible: true,
+      repaso: true,
+      falloContado: false,
+    });
+    const libre = anterior(s2, ctx());
+    expect(libre.contenido).toMatchObject({ marcarVisible: false, repaso: false });
+  });
+
+  it('un giro nuevo descarta el historial anterior', () => {
+    const s1 = otraDelTema(conTarjeta(), ctx(progresoVacio, 'a1'), est, false, rngSecuencia([0]));
+    expect(s1.historial.items).toHaveLength(2);
+    const g = girar(s1, ctx(), est, false, rngSecuencia([0.99]));
+    const s2 = terminarGiro(g, ctx(), est, false, rngSecuencia([0]));
+    expect(s2.historial.items).toHaveLength(1);
+    expect(s2.historial.items[0]).toMatchObject({ temaId: 't3' });
   });
 
   it('voltear deja marcarVisible en true aunque se vuelva al frente', () => {

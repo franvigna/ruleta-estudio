@@ -33,6 +33,10 @@ const ENUNCIADOS_REFORMULADOS: Record<string, string> = {
     '¿Qué tienen en común la búsqueda secuencial, los divisores, SAT y el ordenamiento por permutaciones como algoritmos de fuerza bruta?',
 };
 
+/** Nota eliminada a pedido explicito; el legacy conserva el texto original. */
+const NOTA_ELIMINADA =
+  'Las diapositivas no traen respuesta para esta pregunta: está armada con la teoría de la misma clase.';
+
 const BLOQUE = /^(p|ul|ol|li|table|th|td|tr|div|br|thead|tbody)$/;
 
 function decodificar(s: string): string {
@@ -107,7 +111,7 @@ describe('equivalencia con legacy/data.json', () => {
       const votacion = leg.q.includes('<ol class="opts">');
       expect(p?.tipo).toBe(leg.k === 'teo' ? 'teorica' : votacion ? 'votacion' : 'reflexion');
       expect(p?.etiqueta).toBe(leg.badge === '' ? undefined : leg.badge);
-      expect(p?.nota).toBe(leg.n === '' ? undefined : leg.n);
+      expect(p?.nota).toBe(leg.n === '' || leg.n === NOTA_ELIMINADA ? undefined : leg.n);
     });
 
     it('enunciado: texto visible y estructura', () => {

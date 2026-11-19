@@ -17,8 +17,11 @@ import { useProgreso } from '../providers/ProgresoProvider';
 import { useSesion } from '../providers/SesionProvider';
 import estilos from './PantallaRuleta.module.css';
 
+/** Tiempo que la tarjeta sigue visible despues de marcar, antes de volver a la ruleta. */
+const AUTOCIERRE_MS = 2500;
+
 export function PantallaRuleta() {
-  const { materia, estado, girar, terminarGiro, otra, voltear, marcar } = useSesion();
+  const { materia, estado, girar, terminarGiro, otra, anterior, voltear, marcar } = useSesion();
   const { animador, estrategia } = useDependencias();
   const { progreso } = useProgreso(materia.id);
   const refColumna = useRef<HTMLElement>(null);
@@ -31,7 +34,15 @@ export function PantallaRuleta() {
     });
   };
 
+  const refAutocierre = useRef<number | undefined>(undefined);
+  const cancelarAutocierre = () => {
+    window.clearTimeout(refAutocierre.current);
+    refAutocierre.current = undefined;
+  };
+  useEffect(() => cancelarAutocierre, []);
+
   const girarConSonido = () => {
+    cancelarAutocierre();
     setTarjetaVisible(false);
     activarSonido();
     girar();
@@ -43,12 +54,21 @@ export function PantallaRuleta() {
     setTarjetaVisible(true);
   };
   const marcarConSonido = (marca: 'si' | 'no') => {
+    if (!mostrarTarjeta || !contenido.marcarVisible) return;
     if (marca === 'si') sonidoVictoria();
     else sonidoTrompetaTriste();
     marcar(marca);
+    cancelarAutocierre();
+    refAutocierre.current = window.setTimeout(cerrarTarjeta, AUTOCIERRE_MS);
   };
-
-  useAtajosTeclado({ girar: girarConSonido, voltear, marcar: marcarConSonido });
+  const otraConCancelar = () => {
+    cancelarAutocierre();
+    otra();
+  };
+  const anteriorConCancelar = () => {
+    cancelarAutocierre();
+    anterior();
+  };
 
   const contenido = estado.contenido;
   const preguntaId = contenido.tipo === 'tarjeta' ? contenido.preguntaId : null;
@@ -66,10 +86,13 @@ export function PantallaRuleta() {
     else ruleta.removeAttribute('inert');
   }, [mostrarTarjeta]);
 
-  const cerrarTarjeta = () => {
+  function cerrarTarjeta() {
+    cancelarAutocierre();
     setTarjetaVisible(false);
     enfocarRuleta();
-  };
+  }
+
+  useAtajosTeclado({ girar: girarConSonido, voltear, marcar: marcarConSonido });
 
   const reabrirTarjeta = () => {
     setTarjetaVisible(true);
@@ -150,10 +173,15 @@ export function PantallaRuleta() {
               ref={refColumna}
               contenido={columna}
               ocupado={estadoPantalla(estado) === 'girando'}
+              posicion={{
+                actual: estado.historial.indice + 1,
+                total: estado.historial.items.length,
+              }}
               alCerrar={cerrarTarjeta}
               alVoltear={voltear}
               alMarcar={marcarConSonido}
-              alOtra={otra}
+              alAnterior={anteriorConCancelar}
+              alOtra={otraConCancelar}
               alGirarDeNuevo={girarConSonido}
             />
           </div>
