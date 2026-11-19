@@ -21,6 +21,23 @@ export function registrarFallo(p: Progreso, id: PreguntaId): Progreso {
   return { ...p, fallos: { ...p.fallos, [id]: fallosDe(p, id) + 1 } };
 }
 
+/**
+ * Une dos progresos de la misma materia sin perder datos. Una pregunta vista en
+ * cualquiera de los dos queda vista; si en alguno esta como "no", queda "no"; y de los
+ * fallos se conserva el mayor.
+ */
+export function combinarProgreso(a: Progreso, b: Progreso): Progreso {
+  const marcas: Record<PreguntaId, Marca> = { ...a.marcas };
+  for (const [id, marca] of Object.entries(b.marcas)) {
+    marcas[id] = marcas[id] === 'no' ? 'no' : marca;
+  }
+  const fallos: Record<PreguntaId, number> = { ...a.fallos };
+  for (const [id, cantidad] of Object.entries(b.fallos ?? {})) {
+    fallos[id] = Math.max(fallos[id] ?? 0, cantidad);
+  }
+  return { marcas, ...(Object.keys(fallos).length > 0 ? { fallos } : {}) };
+}
+
 export function reiniciar(): Progreso {
   return progresoVacio;
 }

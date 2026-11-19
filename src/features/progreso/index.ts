@@ -5,5 +5,7 @@ export type { PanelProgresoProps } from './PanelProgreso';
 export { Resumen } from './Resumen';
 export { TemasAReforzar } from './TemasAReforzar';
 export { BarraTema } from './BarraTema';
+export { RespaldoProgreso } from './RespaldoProgreso';
+export type { RespaldoProgresoProps, ResultadoImportacion } from './RespaldoProgreso';
 export { BotonReiniciar } from './BotonReiniciar';
 export type { BotonReiniciarProps } from './BotonReiniciar';

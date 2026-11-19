@@ -19,7 +19,9 @@ export interface InsigniaProps {
 /** Etiqueta chica: "Tomada en parciales", "Para repasar", etc. */
 export function Insignia({ tono = 'normal', children }: InsigniaProps) {
   return (
-    <span className={tono === 'repaso' ? `${estilos.insignia} ${estilos.repaso}` : estilos.insignia}>
+    <span
+      className={tono === 'repaso' ? `${estilos.insignia} ${estilos.repaso}` : estilos.insignia}
+    >
       {children}
     </span>
   );

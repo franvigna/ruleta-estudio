@@ -5,6 +5,13 @@
   bottom: max(16px, env(safe-area-inset-bottom));
 }
 
+/* En celulares y pantallas tactiles no hay teclado: el boton no tiene sentido. */
+@media (max-width: 600px), (hover: none) and (pointer: coarse) {
+  .abrir {
+    display: none;
+  }
+}
+
 .fondo {
   position: fixed;
   z-index: 40;

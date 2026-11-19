@@ -68,18 +68,21 @@ export function Acciones({
           <span className={estilos.estado}>{textoEstado(marca)}</span>
         </div>
       ) : null}
-      <Boton
-        className={estilos.icono}
-        aria-label="Pregunta anterior"
-        title="Pregunta anterior"
-        disabled={posicion.actual <= 1}
-        onClick={alAnterior}
-      >
-        <IconoAnterior />
-      </Boton>
-      <span className={estilos.posicion} aria-label="Posicion en las preguntas vistas">
-        {posicion.actual} / {posicion.total}
-      </span>
+      {posicion.actual > 1 ? (
+        <Boton
+          className={estilos.icono}
+          aria-label="Pregunta anterior"
+          title="Pregunta anterior"
+          onClick={alAnterior}
+        >
+          <IconoAnterior />
+        </Boton>
+      ) : null}
+      {posicion.total > 1 ? (
+        <span className={estilos.posicion} aria-label="Posicion en las preguntas vistas">
+          {posicion.actual} / {posicion.total}
+        </span>
+      ) : null}
       <Boton
         className={estilos.icono}
         aria-label="Siguiente pregunta del mismo tema"

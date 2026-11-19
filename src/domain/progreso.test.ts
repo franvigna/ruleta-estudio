@@ -1,4 +1,5 @@
 import {
+  combinarProgreso,
   estaPendiente,
   idsDeMateria,
   limpiarHuerfanos,
@@ -79,5 +80,19 @@ describe('progreso', () => {
     expect(temaCompleto(t, p)).toBe(false);
     p = marcar(marcar(p, 'a1', 'si'), 'a3', 'si');
     expect(temaCompleto(t, p)).toBe(true);
+  });
+
+  it('combinarProgreso: vista en alguno queda vista, "no" en alguno queda "no"', () => {
+    const a = { marcas: { x: 'si', y: 'si', z: 'no' }, fallos: { z: 2, w: 1 } } as const;
+    const b = { marcas: { x: 'si', y: 'no', v: 'si' }, fallos: { z: 1, w: 4 } } as const;
+    const r = combinarProgreso(a, b);
+    expect(r.marcas).toEqual({ x: 'si', y: 'no', z: 'no', v: 'si' });
+    expect(r.fallos).toEqual({ z: 2, w: 4 });
+    expect(combinarProgreso(b, a).marcas).toEqual(r.marcas);
+    expect(combinarProgreso(b, a).fallos).toEqual(r.fallos);
+  });
+
+  it('combinarProgreso: sin datos en ninguno sigue vacio', () => {
+    expect(combinarProgreso(progresoVacio, progresoVacio)).toEqual({ marcas: {} });
   });
 });

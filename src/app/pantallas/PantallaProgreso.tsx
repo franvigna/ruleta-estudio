@@ -1,6 +1,7 @@
 import { estadisticasPorTema, resumenMateria } from '../../domain/estadisticas';
-import { progresoVacio } from '../../domain/progreso';
-import { PanelProgreso } from '../../features/progreso';
+import { idsDeMateria, progresoVacio } from '../../domain/progreso';
+import { PanelProgreso, RespaldoProgreso } from '../../features/progreso';
+import { crearRespaldo, ErrorRespaldo, leerRespaldo } from '../../infra/respaldo';
 import { useProgreso } from '../providers/ProgresoProvider';
 import { useSesion } from '../providers/SesionProvider';
 import estilos from './PantallaProgreso.module.css';
@@ -8,8 +9,26 @@ import estilos from './PantallaProgreso.module.css';
 export function PantallaProgreso() {
   const sesion = useSesion();
   const { materia } = sesion;
-  const { progreso } = useProgreso(materia.id);
+  const { progreso, importar } = useProgreso(materia.id);
   const p = progreso ?? progresoVacio;
+
+  const alImportar = (codigo: string) => {
+    try {
+      const respaldo = leerRespaldo(codigo);
+      if (respaldo.materiaId !== materia.id) {
+        return { ok: false, mensaje: 'Ese código es de otra materia.' };
+      }
+      if (!importar(respaldo.progreso, idsDeMateria(materia))) {
+        return { ok: false, mensaje: 'El progreso todavía está cargando. Probá de nuevo.' };
+      }
+      return { ok: true, mensaje: 'Progreso importado.' };
+    } catch (e) {
+      return {
+        ok: false,
+        mensaje: e instanceof ErrorRespaldo ? e.message : 'No se pudo importar el código.',
+      };
+    }
+  };
 
   return (
     <main className={estilos.progreso} aria-labelledby="titulo-progreso">
@@ -23,6 +42,10 @@ export function PantallaProgreso() {
         porTema={estadisticasPorTema(materia, p)}
         progreso={p}
         alReiniciar={sesion.reiniciar}
+      />
+      <RespaldoProgreso
+        generarCodigo={() => crearRespaldo(materia.id, p)}
+        alImportar={alImportar}
       />
     </main>
   );

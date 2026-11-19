@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import {
+  combinarProgreso,
   limpiarHuerfanos as limpiarHuerfanosDe,
   marcar as marcarEn,
   registrarFallo,
@@ -24,6 +25,7 @@ interface Acciones {
   leerUltimo(materiaId: MateriaId): Progreso | null;
   marcar(materiaId: MateriaId, id: PreguntaId, m: Marca, contarFallo: boolean): void;
   reiniciar(materiaId: MateriaId): void;
+  importar(materiaId: MateriaId, entrante: Progreso, idsValidos: ReadonlySet<PreguntaId>): boolean;
   limpiarHuerfanos(materiaId: MateriaId, ids: ReadonlySet<PreguntaId>): void;
 }
 
@@ -85,6 +87,15 @@ export function ProgresoProvider({ repositorio, persistente, children }: Progres
         despachar({ tipo: 'reiniciado', materiaId, progreso: vacio });
         encolar(() => repositorio.reiniciar(materiaId));
       },
+      importar(materiaId, entrante, idsValidos) {
+        const actual = ultimo.current.get(materiaId);
+        if (!actual) return false;
+        const siguiente = combinarProgreso(actual, limpiarHuerfanosDe(entrante, idsValidos));
+        ultimo.current.set(materiaId, siguiente);
+        despachar({ tipo: 'marcado', materiaId, progreso: siguiente });
+        encolar(() => repositorio.guardar(materiaId, siguiente));
+        return true;
+      },
       limpiarHuerfanos(materiaId, ids) {
         const actual = ultimo.current.get(materiaId);
         if (!actual) return;
@@ -111,6 +122,8 @@ export interface UsoProgreso {
   progreso: Progreso | null;
   marcar(id: PreguntaId, m: Marca, contarFallo?: boolean): void;
   reiniciar(): void;
+  /** Une un progreso importado con el actual. false si todavia no cargo. */
+  importar(entrante: Progreso, idsValidos: ReadonlySet<PreguntaId>): boolean;
   limpiarHuerfanos(ids: ReadonlySet<PreguntaId>): void;
   /** Ultimo progreso conocido, leido de un ref (para handlers). */
   leerUltimo(): Progreso | null;
@@ -129,12 +142,17 @@ export function useProgreso(materiaId: MateriaId): UsoProgreso {
     [acciones, materiaId],
   );
   const reiniciar = useCallback(() => acciones.reiniciar(materiaId), [acciones, materiaId]);
+  const importar = useCallback(
+    (entrante: Progreso, ids: ReadonlySet<PreguntaId>) =>
+      acciones.importar(materiaId, entrante, ids),
+    [acciones, materiaId],
+  );
   const limpiarHuerfanos = useCallback(
     (ids: ReadonlySet<PreguntaId>) => acciones.limpiarHuerfanos(materiaId, ids),
     [acciones, materiaId],
   );
   const leerUltimo = useCallback(() => acciones.leerUltimo(materiaId), [acciones, materiaId]);
-  return { progreso, marcar, reiniciar, limpiarHuerfanos, leerUltimo };
+  return { progreso, marcar, reiniciar, importar, limpiarHuerfanos, leerUltimo };
 }
 
 /** Progreso de varias materias (catalogo). null en las que aun cargan. */

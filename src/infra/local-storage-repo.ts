@@ -103,7 +103,8 @@ function interpretar(texto: string): DocCrudo | null {
   return { version: 2, materias: { ...(materias as Record<string, unknown>) } };
 }
 
-function progresoDeEntrada(entrada: unknown): Progreso {
+/** Normaliza una entrada externa: descarta marcas y fallos invalidos. */
+export function progresoDeEntrada(entrada: unknown): Progreso {
   const r = EntradaSchema.safeParse(entrada);
   if (!r.success) return { marcas: {} };
   const fallos = soloFallosValidos(r.data.fallos ?? {});

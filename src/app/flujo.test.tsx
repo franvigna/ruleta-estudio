@@ -104,8 +104,8 @@ describe('flujo integrado de estudio', () => {
     await user.click(await screen.findByRole('button', { name: 'Girar la ruleta' }));
     animador.avanzar(6000);
     expect(await screen.findByText('Pregunta a1')).toBeInTheDocument();
-    expect(screen.getByText('1 / 1')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Pregunta anterior' })).toBeDisabled();
+    expect(screen.queryByText('1 / 1')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Pregunta anterior' })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Siguiente pregunta del mismo tema' }));
     expect(await screen.findByText('Pregunta a2')).toBeInTheDocument();
@@ -127,7 +127,55 @@ describe('flujo integrado de estudio', () => {
 
     await user.click(screen.getByRole('button', { name: 'Volver a girar la ruleta' }));
     animador.avanzar(6000);
-    expect(await screen.findByText('1 / 1')).toBeInTheDocument();
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Pregunta anterior' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/\d \/ \d/)).not.toBeInTheDocument();
+  });
+
+  it('importa un codigo uniendo marcas: lo mal visto en alguno queda mal', async () => {
+    const repositorio = crearMemoryRepo({ demo: { marcas: { a1: 'si', b1: 'no' } } });
+    const { user } = renderizarApp({ ruta: '/materia/demo/progreso', repositorio });
+    expect(await screen.findByRole('heading', { name: 'Tu progreso' })).toBeInTheDocument();
+
+    const codigo = JSON.stringify({
+      formato: 'ruleta-estudio-respaldo',
+      version: 1,
+      materiaId: 'demo',
+      progreso: { marcas: { a1: 'no', a2: 'si', b1: 'si', zzz: 'si' } },
+    });
+    await user.click(screen.getByLabelText('Pegá acá el código del otro dispositivo'));
+    await user.paste(codigo);
+    await user.click(screen.getByRole('button', { name: 'Importar progreso' }));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Progreso importado.');
+    await waitFor(async () => {
+      expect((await repositorio.cargar('demo')).marcas).toEqual({ a1: 'no', a2: 'si', b1: 'no' });
+    });
+  });
+
+  it('rechaza codigos de otra materia o invalidos sin tocar el progreso', async () => {
+    const repositorio = crearMemoryRepo({ demo: { marcas: { a1: 'si' } } });
+    const { user } = renderizarApp({ ruta: '/materia/demo/progreso', repositorio });
+    expect(await screen.findByRole('heading', { name: 'Tu progreso' })).toBeInTheDocument();
+    const campo = screen.getByLabelText('Pegá acá el código del otro dispositivo');
+
+    await user.click(campo);
+    await user.paste(
+      JSON.stringify({
+        formato: 'ruleta-estudio-respaldo',
+        version: 1,
+        materiaId: 'otra',
+        progreso: { marcas: { a2: 'si' } },
+      }),
+    );
+    await user.click(screen.getByRole('button', { name: 'Importar progreso' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Ese código es de otra materia.');
+
+    await user.clear(campo);
+    await user.paste('basura');
+    await user.click(screen.getByRole('button', { name: 'Importar progreso' }));
+    expect(screen.getByRole('status')).toHaveTextContent('no es un respaldo válido');
+    expect((await repositorio.cargar('demo')).marcas).toEqual({ a1: 'si' });
   });
 
   it('reinicia el progreso solamente después de la segunda confirmacion', async () => {

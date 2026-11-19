@@ -66,13 +66,16 @@ describe('Acciones', () => {
     expect(screen.getByText('Queda para repasar.')).toBeInTheDocument();
   });
 
-  it('anterior esta deshabilitado en la primera pregunta y muestra la posicion', async () => {
-    const props = montar({ posicion: { actual: 1, total: 3 } });
+  it('con una sola pregunta no hay anterior ni contador', () => {
+    montar({ posicion: { actual: 1, total: 1 } });
+    expect(screen.queryByRole('button', { name: 'Pregunta anterior' })).not.toBeInTheDocument();
+    expect(screen.queryByText('1 / 1')).not.toBeInTheDocument();
+  });
+
+  it('en la primera de varias muestra la posicion pero no el anterior', () => {
+    montar({ posicion: { actual: 1, total: 3 } });
     expect(screen.getByText('1 / 3')).toBeInTheDocument();
-    const anterior = screen.getByRole('button', { name: 'Pregunta anterior' });
-    expect(anterior).toBeDisabled();
-    await userEvent.click(anterior);
-    expect(props.alAnterior).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Pregunta anterior' })).not.toBeInTheDocument();
   });
 
   it('anterior se habilita desde la segunda pregunta', async () => {
